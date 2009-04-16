@@ -1,0 +1,62 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Image::Imlib2;
+
+my $directory = shift || '.';
+my $thumbdir  = "$directory/.thumbs";
+my $indexfile = "$directory/index.xhtml";
+my ($file, $image, $thumb);
+my ($dx, $dy, $tx, $ty);
+$| = 1;
+open(my $index, '>', $indexfile);
+print $index <<ficken;
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title></title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="foo.css"/>
+</head>
+<body><div>
+ficken
+
+if (! -d $thumbdir) {
+	mkdir($thumbdir) or die("cannot create $thumbdir: $!");
+}
+
+opendir(my $dirhandle, $directory) or die("Cannot open $directory: $!");
+print "Generating thumbnails [ - cached | + generated ]\n";
+foreach $file (readdir($dirhandle)) {
+	next unless ($file =~ /\.(png|jpe?g)$/i);
+
+print $index <<ficken;
+	<a href="$file"><img src=".thumbs/$file"/></a>
+ficken
+
+	if (-e "$thumbdir/$file") {
+		print '-';
+		next;
+	}
+	$image = Image::Imlib2->load($file);
+	($dx, $dy) = ($image->width, $image->height);
+	if ($dx > $dy) {
+		$thumb = $image->create_scaled_image(150, 0);
+	} else {
+		$thumb = $image->create_scaled_image(0, 150);
+	}
+	$thumb->set_quality(60);
+	$thumb->save("$thumbdir/$file");
+	chmod(0644, "$thumbdir/$file");
+	print '+';
+}
+print "\n";
+
+print $index <<ficken;
+</div></body>
+</html>
+ficken
+
+close($index);
+chmod(0644, $indexfile);
