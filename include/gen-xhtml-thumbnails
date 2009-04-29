@@ -7,9 +7,24 @@ my $directory = shift || '.';
 my $thumbdir  = "$directory/.thumbs";
 my $indexfile = "$directory/index.xhtml";
 my ($file, $image, $thumb);
-my ($dx, $dy, $tx, $ty);
+my ($dx, $dy);
+my @files;
+my $number = 0;
+
+sub print_progress {
+	if (($number % 60) == 0) {
+		if ($number) {
+			printf(" %4d/%d\n", $number, scalar(@files));
+		}
+		printf('[%3d%%] ', $number * 100 / @files);
+	} elsif (($number % 10) == 0) {
+		print ' ';
+	}
+}
+
 $| = 1;
 open(my $index, '>', $indexfile);
+
 print $index <<ficken;
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -27,14 +42,20 @@ if (! -d $thumbdir) {
 }
 
 opendir(my $dirhandle, $directory) or die("Cannot open $directory: $!");
-print "Generating thumbnails [ - cached | + generated ]\n";
 foreach $file (readdir($dirhandle)) {
-	next unless ($file =~ /\.(png|jpe?g)$/i);
+	push(@files, $file) if ($file =~ /\.(png|jpe?g)$/i);
+}
+closedir($dirhandle);
 
+print "Generating thumbnails [ - cached | + generated ]\n";
+
+foreach $file (@files) {
 print $index <<ficken;
 	<a href="$file"><img src=".thumbs/$file"/></a>
 ficken
 
+	print_progress;
+	$number++;
 	if (-e "$thumbdir/$file") {
 		print '-';
 		next;
