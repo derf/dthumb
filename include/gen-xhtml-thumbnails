@@ -1,4 +1,6 @@
 #!/usr/bin/perl
+# Copyright © 2009 by Daniel Friesel <derf@derf.homelinux.org>
+# License: WTFPL <http://sam.zoy.org/wtfpl>
 use strict;
 use warnings;
 use Image::Imlib2;
@@ -81,3 +83,25 @@ ficken
 
 close($index);
 chmod(0644, $indexfile);
+
+__END__
+
+=head1 NAME
+
+gen-xhtml-thumbnails - Generate Thumbnails + Index for a set of images
+
+=head1 SYNOPSIS
+
+B<gen-xhtml-thumbnails> [I<directory>]
+
+=head1 DESCRIPTION
+
+gen-xhtml-thumbnails will create an F<index.xhtml> with a list (thumbnails) of
+all images found if I<directory>; the thumbnails will link to the images.
+
+The F<index.xhtml> file will always be created in I<directory>.
+The thumbnails will be saved in F<.thumbs>, also in I<directory>.
+If I<directory> is not specified, the current directory is used.
+
+Note that only the images in the directory itself will be processed, recursion
+is not supported.
