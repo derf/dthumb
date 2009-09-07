@@ -27,7 +27,7 @@ sub print_progress {
 $| = 1;
 open(my $index, '>', $indexfile);
 
-print $index <<ficken;
+print $index <<EOD;
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
@@ -37,7 +37,7 @@ print $index <<ficken;
 	<link rel="stylesheet" type="text/css" href="foo.css"/>
 </head>
 <body><div>
-ficken
+EOD
 
 if (! -d $thumbdir) {
 	mkdir($thumbdir) or die("cannot create $thumbdir: $!");
@@ -51,10 +51,10 @@ closedir($dirhandle);
 
 print "Generating thumbnails [ - cached | + generated ]\n";
 
-foreach $file (@files) {
-print $index <<ficken;
+foreach $file (sort(@files)) {
+print $index <<EOD;
 	<a href="$file"><img src=".thumbs/$file"/></a>
-ficken
+EOD
 
 	print_progress;
 	$number++;
@@ -76,10 +76,10 @@ ficken
 }
 print "\n";
 
-print $index <<ficken;
+print $index <<EOD;
 </div></body>
 </html>
-ficken
+EOD
 
 close($index);
 chmod(0644, $indexfile);
