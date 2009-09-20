@@ -4,14 +4,19 @@
 use strict;
 use warnings;
 use Image::Imlib2;
+use constant {
+	DEFAULT_FILEMODE => oct(644),
+	THUMB_MAX_DIM => 150,
+	THUMB_QUALITY => 60,
+};
 
 my $directory = shift || '.';
 my $thumbdir  = "$directory/.thumbs";
 my $indexfile = "$directory/index.xhtml";
-my ($file, $image, $thumb);
 my ($dx, $dy);
 my @files;
 my $number = 0;
+local $| = 1;
 
 sub print_progress {
 	if (($number % 60) == 0) {
@@ -22,12 +27,12 @@ sub print_progress {
 	} elsif (($number % 10) == 0) {
 		print ' ';
 	}
+	return;
 }
 
-$| = 1;
-open(my $index, '>', $indexfile);
+open(my $index, '>', $indexfile) or die("Cannot open $indexfile for writing: $!");
 
-print $index <<EOD;
+print $index <<'EOD';
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
@@ -43,46 +48,54 @@ if (! -d $thumbdir) {
 	mkdir($thumbdir) or die("cannot create $thumbdir: $!");
 }
 
-opendir(my $dirhandle, $directory) or die("Cannot open $directory: $!");
-foreach $file (readdir($dirhandle)) {
-	push(@files, $file) if ($file =~ /\.(png|jpe?g)$/i);
+opendir(my $dirhandle, $directory) or die("Cannot open directory $directory: $!");
+
+foreach my $file (readdir($dirhandle)) {
+	if ($file =~ / \. ( png | jp e? g ) $ /ix) {
+		push(@files, $file);
+	}
 }
+
 closedir($dirhandle);
 
 print "Generating thumbnails [ - cached | + generated ]\n";
 
-foreach $file (sort(@files)) {
-print $index <<EOD;
-	<a href="$file"><img src=".thumbs/$file"/></a>
-EOD
+foreach my $file (sort(@files)) {
+	my $image = Image::Imlib2->load($file);
+	my $thumb;
 
+	print $index "<a href=\"$file\"><img src=\".thumbs/$file\"/></a>\n";
 	print_progress;
 	$number++;
+
 	if (-e "$thumbdir/$file") {
 		print '-';
 		next;
 	}
-	$image = Image::Imlib2->load($file);
+
 	($dx, $dy) = ($image->width, $image->height);
+
 	if ($dx > $dy) {
-		$thumb = $image->create_scaled_image(150, 0);
+		$thumb = $image->create_scaled_image(THUMB_MAX_DIM, 0);
 	} else {
-		$thumb = $image->create_scaled_image(0, 150);
+		$thumb = $image->create_scaled_image(0, THUMB_MAX_DIM);
 	}
-	$thumb->set_quality(60);
+
+	$thumb->set_quality(THUMB_QUALITY);
 	$thumb->save("$thumbdir/$file");
-	chmod(0644, "$thumbdir/$file");
+
+	chmod(DEFAULT_FILEMODE, "$thumbdir/$file");
 	print '+';
 }
 print "\n";
 
-print $index <<EOD;
+print $index <<'EOD';
 </div></body>
 </html>
 EOD
 
-close($index);
-chmod(0644, $indexfile);
+close($index) or die("Cannot close $indexfile: $!");
+chmod(DEFAULT_FILEMODE, $indexfile);
 
 __END__
 
