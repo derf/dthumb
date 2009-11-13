@@ -64,7 +64,7 @@ foreach my $file (sort(@files)) {
 	my $image = Image::Imlib2->load($file);
 	my $thumb;
 
-	print $index "<a href=\"$file\"><img src=\".thumbs/$file\"/></a>\n";
+	print $index "<a href=\"$file\"><img src=\".thumbs/$file\" alt=\"$file\" /></a>\n";
 	print_progress;
 	$number++;
 
