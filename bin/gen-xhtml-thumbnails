@@ -4,15 +4,19 @@
 use strict;
 use warnings;
 use Image::Imlib2;
+use Getopt::Long;
 use constant {
 	DEFAULT_FILEMODE => oct(644),
 	THUMB_MAX_DIM => 150,
 	THUMB_QUALITY => 60,
 };
 
-my $directory = shift || '.';
+my $directory = '.';
 my $thumbdir  = "$directory/.thumbs";
 my $indexfile = "$directory/index.xhtml";
+my $title = '';
+my $css_line = '';
+my $css_source;
 my ($dx, $dy);
 my @files;
 my $number = 0;
@@ -30,15 +34,29 @@ sub print_progress {
 	return;
 }
 
+GetOptions(
+	'css=s'   => \$css_source,
+	'title=s' => \$title,
+);
+
+if (@ARGV > 0) {
+	$directory = shift;
+}
+
+if (defined($css_source)) {
+	$css_line = "<link rel=\"stylesheet\" type=\"text/css\" href=\"$css_source\"/>";
+}
+
 open(my $index, '>', $indexfile) or die("Cannot open $indexfile for writing: $!");
 
-print $index <<'EOD';
+print $index <<"EOD";
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	<title></title>
+	<title>$title</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	$css_line
 </head>
 <body><div>
 EOD
