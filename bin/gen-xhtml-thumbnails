@@ -133,7 +133,7 @@ gen-xhtml-thumbnails - Generate Thumbnails + Index for a set of images
 
 =head1 SYNOPSIS
 
-B<gen-xhtml-thumbnails> [I<directory>]
+B<gen-xhtml-thumbnails> [I<options>] [I<directory>]
 
 =head1 DESCRIPTION
 
@@ -146,3 +146,17 @@ If I<directory> is not specified, the current directory is used.
 
 Note that only the images in the directory itself will be processed, recursion
 is not supported.
+
+=head1 OPTIONS
+
+=over
+
+=item B<--css> I<file>
+
+Use I<file> for css definitions
+
+=item B<--title> I<title>
+
+Use I<title> as <title> for the XHTML output
+
+=back
