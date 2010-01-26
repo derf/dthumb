@@ -9,6 +9,7 @@ use constant {
 	DEFAULT_FILEMODE => oct(644),
 	THUMB_MAX_DIM => 150,
 	THUMB_QUALITY => 60,
+	THUMB_SPACING => 1.1,
 };
 
 my $directory = '.';
@@ -87,8 +88,8 @@ foreach my $file (sort(@files)) {
 	else {
 		printf {$index} (
 			'<div style="float: left; width: %dpx; height: %dpx">',
-			THUMB_MAX_DIM * 1.1,
-			THUMB_MAX_DIM * 1.1,
+			THUMB_MAX_DIM * THUMB_SPACING,
+			THUMB_MAX_DIM * THUMB_SPACING,
 		);
 	}
 
