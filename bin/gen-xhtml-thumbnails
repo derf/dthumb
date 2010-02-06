@@ -104,10 +104,16 @@ foreach my $file (sort(@files)) {
 
 	($dx, $dy) = ($image->width, $image->height);
 
-	if ($dx > $dy) {
-		$thumb = $image->create_scaled_image(THUMB_MAX_DIM, 0);
-	} else {
-		$thumb = $image->create_scaled_image(0, THUMB_MAX_DIM);
+	if ($dx > THUMB_MAX_DIM and $dy > THUMB_MAX_DIM) {
+		if ($dx > $dy) {
+			$thumb = $image->create_scaled_image(THUMB_MAX_DIM, 0);
+		}
+		else {
+			$thumb = $image->create_scaled_image(0, THUMB_MAX_DIM);
+		}
+	}
+	else {
+		$thumb = $image;
 	}
 
 	$thumb->set_quality(THUMB_QUALITY);
