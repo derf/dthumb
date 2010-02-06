@@ -7,7 +7,6 @@ use Image::Imlib2;
 use Getopt::Long;
 use constant {
 	DEFAULT_FILEMODE => oct(644),
-	THUMB_MAX_DIM => 150,
 	THUMB_QUALITY => 60,
 	THUMB_SPACING => 1.1,
 };
@@ -17,6 +16,7 @@ my $thumbdir  = "$directory/.thumbs";
 my $indexfile = "$directory/index.xhtml";
 my $title = '';
 my $css_line = '';
+my $thumb_max_dim = 150;
 my $css_source;
 my ($dx, $dy);
 my @files;
@@ -37,6 +37,7 @@ sub print_progress {
 
 GetOptions(
 	'css=s'   => \$css_source,
+	'size=i'  => \$thumb_max_dim,
 	'title=s' => \$title,
 );
 
@@ -88,8 +89,8 @@ foreach my $file (sort(@files)) {
 	else {
 		printf {$index} (
 			'<div style="float: left; width: %dpx; height: %dpx">',
-			THUMB_MAX_DIM * THUMB_SPACING,
-			THUMB_MAX_DIM * THUMB_SPACING,
+			$thumb_max_dim * THUMB_SPACING,
+			$thumb_max_dim * THUMB_SPACING,
 		);
 	}
 
@@ -104,12 +105,12 @@ foreach my $file (sort(@files)) {
 
 	($dx, $dy) = ($image->width, $image->height);
 
-	if ($dx > THUMB_MAX_DIM and $dy > THUMB_MAX_DIM) {
+	if ($dx > $thumb_max_dim and $dy > $thumb_max_dim) {
 		if ($dx > $dy) {
-			$thumb = $image->create_scaled_image(THUMB_MAX_DIM, 0);
+			$thumb = $image->create_scaled_image($thumb_max_dim, 0);
 		}
 		else {
-			$thumb = $image->create_scaled_image(0, THUMB_MAX_DIM);
+			$thumb = $image->create_scaled_image(0, $thumb_max_dim);
 		}
 	}
 	else {
@@ -161,6 +162,10 @@ is not supported.
 =item B<--css> I<file>
 
 Use I<file> for css definitions
+
+=item B<--size> I<pixels>
+
+Maximum thumbnail size (either width or height)
 
 =item B<--title> I<title>
 
