@@ -7,8 +7,6 @@ use Image::Imlib2;
 use Getopt::Long;
 use constant {
 	DEFAULT_FILEMODE => oct(644),
-	THUMB_QUALITY => 60,
-	THUMB_SPACING => 1.1,
 };
 
 my $directory = '.';
@@ -17,6 +15,8 @@ my $indexfile = "$directory/index.xhtml";
 my $title = '';
 my $css_line = '';
 my $thumb_max_dim = 150;
+my $thumb_quality = 75;
+my $thumb_spacing = 1.1;
 my $css_source;
 my ($dx, $dy);
 my @files;
@@ -36,9 +36,11 @@ sub print_progress {
 }
 
 GetOptions(
-	'css=s'   => \$css_source,
-	'size=i'  => \$thumb_max_dim,
-	'title=s' => \$title,
+	'css=s'     => \$css_source,
+	'size=i'    => \$thumb_max_dim,
+	'spacing=f' => \$thumb_spacing,
+	'title=s'   => \$title,
+	'quality=i' => \$thumb_quality,
 );
 
 if (@ARGV > 0) {
@@ -89,8 +91,8 @@ foreach my $file (sort(@files)) {
 	else {
 		printf {$index} (
 			'<div style="float: left; width: %dpx; height: %dpx">',
-			$thumb_max_dim * THUMB_SPACING,
-			$thumb_max_dim * THUMB_SPACING,
+			$thumb_max_dim * $thumb_spacing,
+			$thumb_max_dim * $thumb_spacing,
 		);
 	}
 
@@ -117,7 +119,7 @@ foreach my $file (sort(@files)) {
 		$thumb = $image;
 	}
 
-	$thumb->set_quality(THUMB_QUALITY);
+	$thumb->set_quality($thumb_quality);
 	$thumb->save("$thumbdir/$file");
 
 	chmod(DEFAULT_FILEMODE, "$thumbdir/$file");
@@ -167,8 +169,21 @@ Use I<file> for css definitions
 
 Maximum thumbnail size (either width or height)
 
+=item B<--spacing> I<float>
+
+Use I<float> as spacing factor.
+The size of each image element (image + possible border around it) is the
+number of pixels (see --size) times I<float>.
+So for B<1.1> you have a small border around each image, for B<1.0> you have
+no border at all, etc.
+
 =item B<--title> I<title>
 
 Use I<title> as <title> for the XHTML output
+
+=item B<--quality> I<int>
+
+Set thumbnail quality.
+Accepts values between 0 and 100, where 100 is the highest possible quality
 
 =back
