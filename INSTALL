@@ -1,0 +1,4 @@
+$ make
+# make install
+
+Requires the Image::Imlib2 perl module.
