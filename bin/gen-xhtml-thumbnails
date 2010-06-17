@@ -81,7 +81,7 @@ closedir($dirhandle);
 
 print "Generating thumbnails [ - cached | + generated ]\n";
 
-foreach my $file (sort(@files)) {
+foreach my $file (sort { lc($a) cmp lc($b) } @files) {
 	my $image = Image::Imlib2->load($file);
 	my $thumb;
 
