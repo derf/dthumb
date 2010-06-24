@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# Copyright © 2009 by Daniel Friesel <derf@derf.homelinux.org>
+# Copyright © 2009,2010 by Daniel Friesel <derf@derf.homelinux.org>
 # License: WTFPL <http://sam.zoy.org/wtfpl>
 use strict;
 use warnings;
@@ -187,3 +187,28 @@ Set thumbnail quality.
 Accepts values between 0 and 100, where 100 is the highest possible quality
 
 =back
+
+=head1 EXIT STATUS
+
+Zero upon success, non-zero otherwise.
+
+=head1 CONFIGURATION
+
+None.
+
+=head1 DEPENDENCIES
+
+B<gen-xhtml-thumbnails> requires the Image::Imlib2 perl module.
+
+=head1 BUGS AND LIMITATIONS
+
+There is no detection for changed images, the thumbnails of deleted images are
+not removed.
+
+=head1 AUTHOR
+
+Copyright (C) 2009, 2010 by Daniel Friesel E<gt>derf@chaosdorf.deE<lt>
+
+=head1 LICENSE
+
+    0. You just DO WHAT THE FUCK YOU WANT TO
