@@ -17,6 +17,7 @@ my $css_line = '';
 my $thumb_max_dim = 150;
 my $thumb_quality = 75;
 my $thumb_spacing = 1.1;
+my $thumb_show_names = 0;
 my $css_source;
 my ($dx, $dy);
 my @files;
@@ -36,11 +37,12 @@ sub print_progress {
 }
 
 GetOptions(
-	'css=s'     => \$css_source,
-	'size=i'    => \$thumb_max_dim,
-	'spacing=f' => \$thumb_spacing,
-	'title=s'   => \$title,
-	'quality=i' => \$thumb_quality,
+	'c|css=s'     => \$css_source,
+	'd|size=i'    => \$thumb_max_dim,
+	's|spacing=f' => \$thumb_spacing,
+	'n|show-name' => \$thumb_show_names,
+	't|title=s'   => \$title,
+	'q|quality=i' => \$thumb_quality,
 );
 
 if (@ARGV > 0) {
@@ -82,7 +84,6 @@ closedir($dirhandle);
 print "Generating thumbnails [ - cached | + generated ]\n";
 
 foreach my $file (sort { lc($a) cmp lc($b) } @files) {
-	my $image = Image::Imlib2->load($file);
 	my $thumb;
 
 	if (defined($css_source)) {
@@ -90,13 +91,22 @@ foreach my $file (sort { lc($a) cmp lc($b) } @files) {
 	}
 	else {
 		printf {$index} (
-			'<div style="float: left; width: %dpx; height: %dpx">',
+			'<div style="%s; %s; %s; width: %dpx; height: %dpx">',
+			'text-align: center',
+			'font-size: 80%',
+			'float: left',
 			$thumb_max_dim * $thumb_spacing,
-			$thumb_max_dim * $thumb_spacing,
+			($thumb_max_dim * $thumb_spacing) + ($thumb_show_names ? 10 : 0),
 		);
 	}
 
-	print {$index} "<a href=\"$file\"><img src=\".thumbs/$file\" alt=\"$file\" /></a></div>\n";
+	print {$index} "<a href=\"$file\"><img src=\".thumbs/$file\" alt=\"$file\" /></a>\n";
+
+	if ($thumb_show_names) {
+		print {$index} "\n${file}";
+	}
+
+	print {$index} "</div>\n";
 	print_progress;
 	$number++;
 
@@ -105,6 +115,7 @@ foreach my $file (sort { lc($a) cmp lc($b) } @files) {
 		next;
 	}
 
+	my $image = Image::Imlib2->load($file);
 	($dx, $dy) = ($image->width, $image->height);
 
 	if ($dx > $thumb_max_dim and $dy > $thumb_max_dim) {
@@ -161,15 +172,19 @@ is not supported.
 
 =over
 
-=item B<--css> I<file>
+=item B<-c>, B<--css> I<file>
 
 Use I<file> for css definitions
 
-=item B<--size> I<pixels>
+=item B<-n>, B<--show-names>
+
+Show image names below thumbnails
+
+=item B<-d>, B<--size> I<pixels>
 
 Maximum thumbnail size (either width or height)
 
-=item B<--spacing> I<float>
+=item B<-s>, B<--spacing> I<float>
 
 Use I<float> as spacing factor.
 The size of each image element (image + possible border around it) is the
@@ -177,11 +192,11 @@ number of pixels (see --size) times I<float>.
 So for B<1.1> you have a small border around each image, for B<1.0> you have
 no border at all, etc.
 
-=item B<--title> I<title>
+=item B<-t>, B<--title> I<title>
 
 Use I<title> as <title> for the XHTML output
 
-=item B<--quality> I<int>
+=item B<-q>, B<--quality> I<int>
 
 Set thumbnail quality.
 Accepts values between 0 and 100, where 100 is the highest possible quality
