@@ -103,7 +103,20 @@ foreach my $file (sort { lc($a) cmp lc($b) } @files) {
 	print {$index} "<a href=\"$file\"><img src=\".thumbs/$file\" alt=\"$file\" /></a>\n";
 
 	if ($thumb_show_names) {
-		print {$index} "\n${file}";
+		print {$index} "<br />\n";
+
+		if ($css_source) {
+			print {$index}
+				"<a class=\"textlink\" href=\"${file}\">${file}</a>";
+		}
+		else {
+			printf {$index} (
+				'<a style="%s" href="%s">%s</a>',
+				'text-decoration: none;',
+				$file,
+				$file,
+			);
+		}
 	}
 
 	print {$index} "</div>\n";
