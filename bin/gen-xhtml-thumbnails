@@ -3,11 +3,16 @@
 # License: WTFPL <http://sam.zoy.org/wtfpl>
 use strict;
 use warnings;
-use Image::Imlib2;
-use Getopt::Long;
+
 use constant {
 	DEFAULT_FILEMODE => oct(644),
 };
+
+use Archive::Tar;
+use Cwd;
+use Getopt::Long;
+use Image::Imlib2;
+
 
 my $directory = '.';
 my $thumbdir  = "$directory/.thumbs";
@@ -22,6 +27,8 @@ my $css_source;
 my ($dx, $dy);
 my @files;
 my $number = 0;
+my $create_archive = 0;
+my $tar = Archive::Tar->new();
 local $| = 1;
 
 sub print_progress {
@@ -43,6 +50,7 @@ GetOptions(
 	'n|show-name' => \$thumb_show_names,
 	't|title=s'   => \$title,
 	'q|quality=i' => \$thumb_quality,
+	'x|archive'   => \$create_archive,
 );
 
 if (@ARGV > 0) {
@@ -81,9 +89,16 @@ foreach my $file (readdir($dirhandle)) {
 
 closedir($dirhandle);
 
+@files = sort { lc($a) cmp lc($b) } @files;
+
+if ($create_archive) {
+	print "Adding files to tar archive\n";
+	$tar->add_files(@files);
+}
+
 print "Generating thumbnails [ - cached | + generated ]\n";
 
-foreach my $file (sort { lc($a) cmp lc($b) } @files) {
+foreach my $file (@files) {
 	my $thumb;
 
 	if (defined($css_source)) {
@@ -150,6 +165,13 @@ foreach my $file (sort { lc($a) cmp lc($b) } @files) {
 	print '+';
 }
 print "\n";
+
+if ($create_archive) {
+	print "Writing tar archive to disk\n";
+	$tar->write('images.tar', undef, (split(qr{/}, getcwd))[-1]);
+
+	print $index "</div><div style=\"clear: left;\"><a href=\"images.tar\">archive</a>\n";
+}
 
 print $index <<'EOD';
 </div></body>
