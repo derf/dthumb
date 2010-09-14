@@ -207,6 +207,13 @@ is not supported.
 
 =over
 
+=item B<-x>, B<--archive>
+
+Create (and link) an "image.tar" archive containing all full-size image files.
+All but the last directories in the files' path are stripped, besides that the
+directory structure is preserved. So, if you run gen-xhtml-thumbnails -x in
+.../mydir/, the archive will contain mydir/1.jpg, mydir/2.jpg etc.
+
 =item B<-c>, B<--css> I<file>
 
 Use I<file> for css definitions
