@@ -1,0 +1,13 @@
+gen-xhtml-thumbnails - Create quick thumbnail list for images
+
+Requires: 
+ * perl version 5.10 or newer
+ * The Image::Imlib2 perl module
+
+Installation:
+
+> perl Build.PL
+> ./Build
+> sudo ./Build install
+
+You can then run 'man gen-xhtml-thumbnails' for more information.
