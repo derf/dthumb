@@ -146,7 +146,7 @@ foreach my $file (@files) {
 	my $image = Image::Imlib2->load($file);
 	($dx, $dy) = ($image->width, $image->height);
 
-	if ($dx > $thumb_max_dim and $dy > $thumb_max_dim) {
+	if ($dx > $thumb_max_dim or $dy > $thumb_max_dim) {
 		if ($dx > $dy) {
 			$thumb = $image->create_scaled_image($thumb_max_dim, 0);
 		}
