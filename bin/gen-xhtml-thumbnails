@@ -218,13 +218,13 @@ directory structure is preserved. So, if you run gen-xhtml-thumbnails -x in
 
 Use I<file> for css definitions
 
-=item B<-n>, B<--show-names>
+=item B<-n>, B<--no-names>
 
-Show image names below thumbnails
+Do not show image names below thumbnails
 
 =item B<-d>, B<--size> I<pixels>
 
-Maximum thumbnail size (either width or height)
+Maximum thumbnail size (either width or height).  Defaults to 200
 
 =item B<-s>, B<--spacing> I<float>
 
