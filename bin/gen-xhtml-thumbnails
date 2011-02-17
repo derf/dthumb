@@ -19,10 +19,10 @@ my $thumbdir  = "$directory/.thumbs";
 my $indexfile = "$directory/index.xhtml";
 my $title = '';
 my $css_line = '';
-my $thumb_max_dim = 150;
+my $thumb_max_dim = 200;
 my $thumb_quality = 75;
 my $thumb_spacing = 1.1;
-my $thumb_show_names = 0;
+my $thumb_no_names = 0;
 my $css_source;
 my ($dx, $dy);
 my @files;
@@ -47,7 +47,7 @@ GetOptions(
 	'c|css=s'     => \$css_source,
 	'd|size=i'    => \$thumb_max_dim,
 	's|spacing=f' => \$thumb_spacing,
-	'n|show-name' => \$thumb_show_names,
+	'n|no-names'  => \$thumb_no_names,
 	't|title=s'   => \$title,
 	'q|quality=i' => \$thumb_quality,
 	'x|archive'   => \$create_archive,
@@ -111,13 +111,13 @@ foreach my $file (@files) {
 			'font-size: 80%',
 			'float: left',
 			$thumb_max_dim * $thumb_spacing,
-			($thumb_max_dim * $thumb_spacing) + ($thumb_show_names ? 10 : 0),
+			($thumb_max_dim * $thumb_spacing) + ($thumb_no_names ? 0 : 10),
 		);
 	}
 
 	print {$index} "<a href=\"$file\"><img src=\".thumbs/$file\" alt=\"$file\" /></a>\n";
 
-	if ($thumb_show_names) {
+	if (not $thumb_no_names) {
 		print {$index} "<br />\n";
 
 		if ($css_source) {
