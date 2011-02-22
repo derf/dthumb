@@ -3,6 +3,7 @@
 # License: WTFPL <http://sam.zoy.org/wtfpl>
 use strict;
 use warnings;
+use autodie;
 
 use constant {
 	DEFAULT_FILEMODE => oct(644),
@@ -14,18 +15,16 @@ use Getopt::Long;
 use Image::Imlib2;
 
 
-my $directory = '.';
-my $thumbdir  = "$directory/.thumbs";
-my $indexfile = "$directory/index.xhtml";
-my $lightboxfile = "$directory/lightbox.js";
-my $title = '';
-my $css_line = '';
-my $thumb_max_dim = 200;
+my $thumbdir  = '.thumbs';
+my $file_index = 'index.xhtml';
+my $file_lightbox = 'lightbox.js';
+my $title = q{};
+my $css_line = q{};
+my $thumb_dim     = 200;
 my $thumb_quality = 75;
 my $thumb_spacing = 1.1;
 my $thumb_no_names = 0;
 my $css_source;
-my ($dx, $dy);
 my @files;
 my $number = 0;
 my $create_archive = 0;
@@ -46,7 +45,7 @@ sub print_progress {
 
 GetOptions(
 	'c|css=s'     => \$css_source,
-	'd|size=i'    => \$thumb_max_dim,
+	'd|size=i'    => \$thumb_dim,
 	's|spacing=f' => \$thumb_spacing,
 	'n|no-names'  => \$thumb_no_names,
 	't|title=s'   => \$title,
@@ -54,21 +53,17 @@ GetOptions(
 	'x|archive'   => \$create_archive,
 );
 
-if (@ARGV > 0) {
-	$directory = shift;
-}
-
 if (defined($css_source)) {
 	$css_line = "<link rel=\"stylesheet\" type=\"text/css\" href=\"$css_source\"/>";
 }
 
-open(my $lightbox, '>', $lightboxfile) or die("Cannot open $lightboxfile for writing: $!");
+open(my $lightbox, '>', $file_lightbox);
 while (my $line = <DATA>) {
 	print {$lightbox} $line;
 }
 close($lightbox);
 
-open(my $index, '>', $indexfile) or die("Cannot open $indexfile for writing: $!");
+open(my $index, '>', $file_index);
 
 print $index <<"EOD";
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
@@ -126,10 +121,10 @@ print $index <<"EOD";
 EOD
 
 if (! -d $thumbdir) {
-	mkdir($thumbdir) or die("cannot create $thumbdir: $!");
+	mkdir($thumbdir);
 }
 
-opendir(my $dirhandle, $directory) or die("Cannot open directory $directory: $!");
+opendir(my $dirhandle, '.');
 
 foreach my $file (readdir($dirhandle)) {
 	if ($file =~ / \. ( png | jp e? g ) $ /ix) {
@@ -160,8 +155,8 @@ foreach my $file (@files) {
 			'text-align: center',
 			'font-size: 80%',
 			'float: left',
-			$thumb_max_dim * $thumb_spacing,
-			($thumb_max_dim * $thumb_spacing) + ($thumb_no_names ? 0 : 10),
+			$thumb_dim * $thumb_spacing,
+			($thumb_dim * $thumb_spacing) + ($thumb_no_names ? 0 : 10),
 		);
 	}
 
@@ -194,14 +189,14 @@ foreach my $file (@files) {
 	}
 
 	my $image = Image::Imlib2->load($file);
-	($dx, $dy) = ($image->width, $image->height);
+	my ($dx, $dy) = ($image->width, $image->height);
 
-	if ($dx > $thumb_max_dim or $dy > $thumb_max_dim) {
+	if ($dx > $thumb_dim or $dy > $thumb_dim) {
 		if ($dx > $dy) {
-			$thumb = $image->create_scaled_image($thumb_max_dim, 0);
+			$thumb = $image->create_scaled_image($thumb_dim, 0);
 		}
 		else {
-			$thumb = $image->create_scaled_image(0, $thumb_max_dim);
+			$thumb = $image->create_scaled_image(0, $thumb_dim);
 		}
 	}
 	else {
@@ -228,8 +223,8 @@ print $index <<'EOD';
 </html>
 EOD
 
-close($index) or die("Cannot close $indexfile: $!");
-chmod(DEFAULT_FILEMODE, $indexfile);
+close($index);
+chmod(DEFAULT_FILEMODE, $file_index);
 
 
 
