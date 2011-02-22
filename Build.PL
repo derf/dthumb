@@ -15,6 +15,7 @@ my $build = Module::Build->new(
 	license => 'unrestricted',
 	requires => {
 		'perl' => '5.10.0',
+		'autodie' => 0,
 		'Archive::Tar' => 0,
 		'Image::Imlib2' => 0,
 	},
