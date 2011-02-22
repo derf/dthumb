@@ -10,8 +10,8 @@ my $build = Module::Build->new(
 		'Test::Compile' => 0,
 		'Test::Pod' => 0,
 	},
-	dist_name => 'gen-xhtml-thumbnails',
-	dist_version_from => 'bin/gen-xhtml-thumbnails',
+	dist_name => 'dthumb',
+	dist_version_from => 'bin/dthumb',
 	license => 'unrestricted',
 	requires => {
 		'perl' => '5.10.0',

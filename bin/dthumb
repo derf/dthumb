@@ -235,15 +235,15 @@ chmod(DEFAULT_FILEMODE, $indexfile);
 
 =head1 NAME
 
-gen-xhtml-thumbnails - Generate Thumbnails + Index for a set of images
+dthumb - Generate Thumbnails + Index for a set of images
 
 =head1 SYNOPSIS
 
-B<gen-xhtml-thumbnails> [I<options>] [I<directory>]
+B<dthumb> [I<options>] [I<directory>]
 
 =head1 DESCRIPTION
 
-gen-xhtml-thumbnails will create an F<index.xhtml> with a list (thumbnails) of
+dthumb will create an F<index.xhtml> with a list (thumbnails) of
 all images found if I<directory>; the thumbnails will link to the images.
 
 The F<index.xhtml> file will always be created in I<directory>.
@@ -261,7 +261,7 @@ is not supported.
 
 Create (and link) an "image.tar" archive containing all full-size image files.
 All but the last directories in the files' path are stripped, besides that the
-directory structure is preserved. So, if you run gen-xhtml-thumbnails -x in
+directory structure is preserved. So, if you run dthumb -x in
 .../mydir/, the archive will contain mydir/1.jpg, mydir/2.jpg etc.
 
 =item B<-c>, B<--css> I<file>
@@ -305,7 +305,7 @@ None.
 
 =head1 DEPENDENCIES
 
-B<gen-xhtml-thumbnails> requires the Image::Imlib2 perl module.
+B<dthumb> requires the Image::Imlib2 perl module.
 
 =head1 BUGS AND LIMITATIONS
 

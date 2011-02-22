@@ -1,4 +1,4 @@
-gen-xhtml-thumbnails - Create quick thumbnail list for images
+dthumb - Create static HTML thumbnail list for images
 
 Requires: 
  * perl version 5.10 or newer
@@ -10,4 +10,4 @@ Installation:
 > ./Build
 > sudo ./Build install
 
-You can then run 'man gen-xhtml-thumbnails' for more information.
+You can then run 'man dthumb' for more information.
