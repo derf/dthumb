@@ -314,6 +314,9 @@ None.
 There is no detection for changed images, the thumbnails of deleted images are
 not removed.
 
+When used with B<-x>, the completer tar archive is kept in memory, leading to
+enormous memory usage and possibly out-of-memory errors.
+
 =head1 AUTHOR
 
 Copyright (C) 2009, 2010 by Daniel Friesel E<lt>derf@chaosdorf.deE<gt>
