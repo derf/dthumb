@@ -63,6 +63,20 @@ while (my $line = <DATA>) {
 }
 close($lightbox);
 
+if (-d $thumbdir) {
+	opendir(my $thumb_dh, $thumbdir);
+	for my $file (readdir($thumb_dh)) {
+		if ($file =~ qr{^\.}) {
+			next;
+		}
+
+		if (not -e $file) {
+			unlink("${thumbdir}/${file}");
+		}
+	}
+	closedir($thumb_dh);
+}
+
 open(my $index, '>', $file_index);
 
 print $index <<"EOD";
@@ -311,8 +325,7 @@ None.
 
 =head1 BUGS AND LIMITATIONS
 
-There is no detection for changed images, the thumbnails of deleted images are
-not removed.
+Thumbnails of changed images are not yet recreated.
 
 When used with B<-x>, the completer tar archive is kept in memory, leading to
 enormous memory usage and possibly out-of-memory errors.
