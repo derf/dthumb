@@ -37,6 +37,7 @@ sub new {
 	$ref->{config}->{file_index}    = 'index.xhtml';
 	$ref->{config}->{file_lightbox} = 'lightbox.js';
 	$ref->{config}->{dir_thumbs}    = '.thumbs';
+	$ref->{config}->{dir_data}      = '.dthumb';
 
 	return bless($ref, $obj);
 }
@@ -84,14 +85,31 @@ sub read_directories {
 sub create_files {
 	my ($self) = @_;
 	my $thumbdir = $self->{config}->{dir_thumbs};
+	my $datadir  = $self->{config}->{dir_data};
 	my $fh;
 
 	if (not -d $thumbdir) {
 		mkdir($thumbdir);
 	}
 
-	open($fh, '>', 'lightbox.js');
+	if (not -d $datadir) {
+		mkdir($datadir);
+	}
+
+	open($fh, '>', "${datadir}/lightbox.js");
 	print {$fh} $self->{data}->lightbox();
+	close($fh);
+
+	open($fh, '>', "${datadir}/overlay.png");
+	print {$fh} $self->{data}->overlay_png();
+	close($fh);
+
+	open($fh, '>', "${datadir}/loading.gif");
+	print {$fh} $self->{data}->loading_gif();
+	close($fh);
+
+	open($fh, '>', "${datadir}/close.gif");
+	print {$fh} $self->{data}->close_gif();
 	close($fh);
 }
 
