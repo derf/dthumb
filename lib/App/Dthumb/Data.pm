@@ -96,7 +96,7 @@ ______[ html_and_css ]______
 
 #overlay {
 	color: transparent;
-/*	background-image: url(overlay.png); */
+	background-image: url(.dthumb/overlay.png);
 }
 
 	</style>
@@ -206,8 +206,8 @@ ______[ lightbox.js ]______
 //
 
 // If you would like to use a custom loading image or close button reference them in the next two lines.
-var loadingImage = 'loading.gif';		
-var closeButton = 'close.gif';		
+var loadingImage = '.dthumb/loading.gif';
+var closeButton = '.dthumb/close.gif';
 
 
 
