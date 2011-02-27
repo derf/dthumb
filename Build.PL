@@ -10,6 +10,7 @@ my $build = Module::Build->new(
 		'Test::Compile' => 0,
 		'Test::Pod' => 0,
 	},
+	dist_abstract => 'Generate Thumbnails + Index for a set of images',
 	dist_name => 'dthumb',
 	module_name => 'App::Dthumb',
 	license => 'unrestricted',
