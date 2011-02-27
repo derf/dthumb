@@ -11,14 +11,16 @@ my $build = Module::Build->new(
 		'Test::Pod' => 0,
 	},
 	dist_name => 'dthumb',
-	dist_version_from => 'bin/dthumb',
+	module_name => 'App::Dthumb',
 	license => 'unrestricted',
 	requires => {
 		'perl' => '5.10.0',
 		'autodie' => 0,
 		'Archive::Tar' => 0,
+		'Cwd' => 0,
+		'Data::Section' => 0,
+		'Getopt::Long' => 0,
 		'Image::Imlib2' => 0,
 	},
-	script_files => 'bin/',
 );
 $build->create_build_script();
