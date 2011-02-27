@@ -16,6 +16,7 @@ GetOptions(
 		help|h
 		size|d=i
 		spacing|s=f
+		no-lightbox|L
 		no-names|n
 		quality|q=i
 		version|v
@@ -47,6 +48,12 @@ Note that recursion is not yet supported.
 =head1 OPTIONS
 
 =over
+
+=item B<-L>, B<--no-lightbox>
+
+Disable Javascript lightbox.  Note that in the current implementations, this
+simple skips installation of the data files.  The lightbox link in the HTML
+will still be written, leading to 404s on the server.  This will be fixed.
 
 =item B<-n>, B<--no-names>
 

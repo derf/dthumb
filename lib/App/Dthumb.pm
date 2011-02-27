@@ -23,6 +23,7 @@ sub new {
 	$conf->{size}    //= 200;
 	$conf->{spacing} //= 1.1;
 	$conf->{quality} //= 75;
+	$conf->{lightbox}  = !$conf->{'no-lightbox'};
 	$conf->{names}     = !$conf->{'no-names'};
 
 	$ref->{config} = $conf;
@@ -104,14 +105,17 @@ sub create_files {
 		mkdir($thumbdir);
 	}
 
-	if (not -d $datadir) {
-		mkdir($datadir);
-	}
+	if ($self->{config}->{lightbox}) {
 
-	for my $file (qw(lightbox.js overlay.png loading.gif close.gif)) {
-		open(my $fh, '>', "${datadir}/${file}");
-		print {$fh} $self->{data}->get($file);
-		close($fh);
+		if (not -d $datadir) {
+			mkdir($datadir);
+		}
+
+		for my $file (qw(lightbox.js overlay.png loading.gif close.gif)) {
+			open(my $fh, '>', "${datadir}/${file}");
+			print {$fh} $self->{data}->get($file);
+			close($fh);
+		}
 	}
 }
 
