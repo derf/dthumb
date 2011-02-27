@@ -42,9 +42,6 @@ dthumb will create an F<index.xhtml> with a list (thumbnails) of
 all images found in the current directory; the thumbnails will link to the
 images.
 
-The F<index.xhtml> file will always be created in the current directory, the
-thumbnails will be saved in F<.thumbs> below it.
-
 Note that recursion is not yet supported.
 
 =head1 OPTIONS
@@ -81,6 +78,14 @@ Zero upon success, non-zero otherwise.
 =head1 CONFIGURATION
 
 None.
+
+=head1 FILES
+
+B<dthumb> always works in the current working directory.  It will create the
+file F<index.xhtml>, in which the HTML code for the thumbnail list is saved.
+
+It also creates two directories: F<.thumbs> for the thumbnail images, and
+F<.dthumb>, which contains various data (so far icons and javascript code).
 
 =head1 DEPENDENCIES
 
