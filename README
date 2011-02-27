@@ -4,6 +4,7 @@ Requires:
  * perl version 5.10 or newer
  * Data::Section
  * Image::Imlib2
+ * Time::Progress
 
 Installation:
 

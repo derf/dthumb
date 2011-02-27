@@ -45,6 +45,8 @@ images.
 
 Note that recursion is not yet supported.
 
+During operation, B<dthumb> will show its progress on STDERR.
+
 =head1 OPTIONS
 
 =over
@@ -103,6 +105,8 @@ F<.dthumb>, which contains various data (so far icons and javascript code).
 =item * Data::Section
 
 =item * Image::Imlib2
+
+=item * Time::Progress
 
 =back
 

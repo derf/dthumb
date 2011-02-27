@@ -10,11 +10,13 @@ use base 'Exporter';
 use App::Dthumb::Data;
 use Cwd;
 use Image::Imlib2;
+use IO::Handle;
+use Time::Progress;
 
 our @EXPORT_OK = ();
 our $VERSION = '0.1';
 
-local $| = 1;
+STDERR->autoflush(1);
 
 sub new {
 	my ($obj, $conf) = @_;
@@ -29,6 +31,7 @@ sub new {
 	$ref->{config} = $conf;
 
 	$ref->{data} = App::Dthumb::Data->new();
+	$ref->{timer} = Time::Progress->new();
 
 	$ref->{html} = $ref->{data}->get('html_start');
 
@@ -94,6 +97,11 @@ sub read_directories {
 
 	@{$self->{files}} = sort { lc($a) cmp lc($b) } @files;
 	@{$self->{old_thumbnails}} = @old_thumbs;
+
+	$self->{timer}->attr(
+		min => 1,
+		max => scalar @files,
+	);
 }
 
 sub create_files {
@@ -132,9 +140,16 @@ sub create_thumbnails {
 	my ($self) = @_;
 
 	for my $file (@{$self->{files}}) {
+
+		print STDERR $self->{timer}->report(
+			"\r\e[KCreating Thumbnails: %p done, %L elapsed, %E remaining",
+			++$self->{current_file_id},
+		);
+
 		$self->create_thumbnail_html($file);
 		$self->create_thumbnail_image($file);
 	}
+	print "\n";
 }
 
 sub create_thumbnail_html {
@@ -219,3 +234,5 @@ sub write_out_html {
 #	}
 #	return;
 #}
+
+1;

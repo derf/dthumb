@@ -21,7 +21,9 @@ my $build = Module::Build->new(
 		'Data::Section' => 0,
 		'Getopt::Long' => 0,
 		'Image::Imlib2' => 0,
+		'IO::Handle' => 0,
 		'MIME::Base64' => 0,
+		'Time::Progress' => 0,
 	},
 );
 $build->create_build_script();
