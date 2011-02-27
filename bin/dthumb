@@ -13,11 +13,12 @@ my $opt = {};
 GetOptions(
 	$opt,
 	qw{
+		help|h
 		size|d=i
 		spacing|s=f
 		no-names|n
 		quality|q=i
-		archive|x
+		version|v
 	},
 ) or die("Please see perldoc -F $0\n");
 

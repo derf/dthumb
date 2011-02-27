@@ -44,11 +44,25 @@ sub new {
 sub run {
 	my ($self) = @_;
 
+	$self->check_cmd_flags();
 	$self->read_directories();
 	$self->create_files();
 	$self->delete_old_thumbnails();
 	$self->create_thumbnails();
 	$self->write_out_html();
+}
+
+sub check_cmd_flags {
+	my ($self) = @_;
+
+	if ($self->{config}->{version}) {
+		say "dthumb version ${VERSION}";
+		exit 0;
+	}
+	if ($self->{config}->{help}) {
+		say "Please refer to perldoc -F $0 (or man dthumb)";
+		exit 0;
+	}
 }
 
 sub read_directories {
