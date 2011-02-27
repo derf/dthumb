@@ -1,6 +1,7 @@
 #!/usr/bin/perl
-# Copyright © 2009,2010 by Daniel Friesel <derf@derf.homelinux.org>
-# License: WTFPL <http://sam.zoy.org/wtfpl>
+# Copyright © 2009-2011 by Daniel Friesel <derf@chaosdorf.de>
+# License: WTFPL:
+#     You just DO WHAT THE FUCK YOU WANT TO
 use strict;
 use warnings;
 use autodie;
@@ -37,9 +38,13 @@ dthumb - Generate Thumbnails + Index for a set of images
 
 B<dthumb> [I<options>]
 
+=head1 VERSION
+
+This manual documents B<dthumb> version 0.1
+
 =head1 DESCRIPTION
 
-dthumb will create an F<index.xhtml> with a list (thumbnails) of
+B<dthumb> will create an F<index.xhtml> with a list (thumbnails) of
 all images found in the current directory; the thumbnails will link to the
 images.
 
@@ -73,10 +78,13 @@ number of pixels (see --size) times I<float>.
 So for B<1.1> you have a small border around each image, for B<1.0> you have
 no border at all, etc.
 
+Defaults to 1.1
+
 =item B<-q>, B<--quality> I<int>
 
 Set thumbnail quality.
-Accepts values between 0 and 100, where 100 is the highest possible quality
+Accepts values between 0 and 100, where 100 is the highest possible quality.
+Default is 75
 
 =back
 
@@ -114,9 +122,12 @@ F<.dthumb>, which contains various data (so far icons and javascript code).
 
 Thumbnails of changed images are not yet recreated.
 
+Report issues either by mail to E<lt>derf@chaosdorf.deE<gt> or on
+E<lt>http://github.com/derf/dthumb/issuesE<gt>.
+
 =head1 AUTHOR
 
-Copyright (C) 2009, 2010 by Daniel Friesel E<lt>derf@chaosdorf.deE<gt>
+Copyright (C) 2009-2011 by Daniel Friesel E<lt>derf@chaosdorf.deE<gt>
 
 The lightbox code is (C) by Lokesh Dhakar
 E<lt>http://huddletogether.com/projects/lightbox/E<gt>, licensed under

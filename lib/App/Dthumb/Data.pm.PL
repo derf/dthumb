@@ -46,6 +46,7 @@ use Data::Section -setup;
 use MIME::Base64 qw(decode_base64);
 
 our @EXPORT_OK = ();
+our $VERSION = '0.1';
 
 sub new {
 	my ($obj) = @_;
