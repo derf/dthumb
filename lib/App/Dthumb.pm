@@ -62,7 +62,7 @@ sub read_directories {
 	opendir($dh, $imgdir);
 
 	for my $file (readdir($dh)) {
-		if (-f $file and $file =~ qr{ \. (png | jp e? g | gif | tif) $ }iox) {
+		if (-f $file and $file =~ qr{ \. (png | jp e? g) $ }iox) {
 			push(@files, $file);
 		}
 	}
