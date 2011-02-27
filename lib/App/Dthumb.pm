@@ -146,8 +146,7 @@ sub create_thumbnail_html {
 	);
 	$self->{html} .= sprintf(
 		"\t<a rel=\"lightbox\" href=\"%s\">\n"
-		. "\t\t<img src=\"%s/%s\" alt=\"%s\" />\n"
-		. "\t</a>\n",
+		. "\t\t<img src=\"%s/%s\" alt=\"%s\" /></a>\n",
 		$file,
 		$self->{config}->{dir_thumbs},
 		($file) x 2,
