@@ -24,6 +24,7 @@ sub new {
 	$conf->{size}    //= 200;
 	$conf->{spacing} //= 1.1;
 	$conf->{quality} //= 75;
+	$conf->{names}     = !$conf->{'no-names'};
 
 	$ref->{config} = $conf;
 
@@ -123,7 +124,7 @@ sub create_thumbnails {
 sub create_thumbnail_html {
 	my ($self, $file) = @_;
 	my $div_width = $self->{config}->{size} * $self->{config}->{spacing};
-	my $div_height = $div_width + ($self->{config}->{no_names} ? 0 : 10);
+	my $div_height = $div_width + ($self->{config}->{names} ? 10 : 0);
 
 	$self->{html} .= sprintf(
 		"<div style=\"%s; %s; %s; width: %dpx; height: %dpx\">\n",
@@ -140,7 +141,7 @@ sub create_thumbnail_html {
 		$self->{config}->{dir_thumbs},
 		($file) x 2,
 	);
-	if (not $self->{config}->{no_names}) {
+	if ($self->{config}->{names}) {
 		$self->{html} .= sprintf(
 			"\t<br />\n"
 			. "\t<a style=\"%s;\" href=\"%s\">%s</a>\n",
