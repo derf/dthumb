@@ -50,13 +50,6 @@ Note that recursion is not yet supported.
 
 =over
 
-=item B<-x>, B<--archive>
-
-Create (and link) an "image.tar" archive containing all full-size image files.
-All but the last directories in the files' path are stripped, besides that the
-directory structure is preserved. So, if you run dthumb -x in
-.../mydir/, the archive will contain mydir/1.jpg, mydir/2.jpg etc.
-
 =item B<-n>, B<--no-names>
 
 Do not show image names below thumbnails
@@ -94,7 +87,7 @@ None.
 
 =item * autodie (Included in core as of perl 5.10.1)
 
-=item * Archive::Tar (subject to change)
+=item * Data::Section
 
 =item * Image::Imlib2
 
@@ -103,9 +96,6 @@ None.
 =head1 BUGS AND LIMITATIONS
 
 Thumbnails of changed images are not yet recreated.
-
-When used with B<-x>, the completer tar archive is kept in memory, leading to
-enormous memory usage and possibly out-of-memory errors.
 
 =head1 AUTHOR
 

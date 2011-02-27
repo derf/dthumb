@@ -8,7 +8,6 @@ use 5.010;
 use base 'Exporter';
 
 use App::Dthumb::Data;
-use Archive::Tar;
 use Cwd;
 use Image::Imlib2;
 
@@ -29,7 +28,6 @@ sub new {
 	$ref->{config} = $conf;
 
 	$ref->{data} = App::Dthumb::Data->new();
-	$ref->{tar}  = Archive::Tar->new();
 
 	$ref->{html} = $ref->{data}->get('html_start');
 
