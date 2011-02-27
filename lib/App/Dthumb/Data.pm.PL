@@ -4,8 +4,8 @@ use warnings;
 use 5.010;
 use autodie;
 use MIME::Base64 qw(encode_base64);
+use IO::Handle;
 
-local $/ = undef;
 my ($out_file) = @ARGV;
 
 open(my $out_fh, '>', $out_file);
@@ -19,6 +19,7 @@ for my $file (readdir($share_dh)) {
 	}
 
 	open(my $fh, '<', "share/${file}");
+	$fh->input_record_separator(undef);
 	my $content = <$fh>;
 	close($fh);
 
