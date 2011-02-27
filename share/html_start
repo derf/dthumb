@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>dthumb</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<script type="text/javascript" src=".dthumb/lightbox.js"></script>
+	<style type="text/css">
+
+#lightbox {
+	background-color:#eee;
+	padding: 10px;
+	border-bottom: 2px solid #666;
+	border-right: 2px solid #666;
+}
+
+#lightboxDetails {
+	font-size: 0.8em;
+	padding-top: 0.4em;
+}
+
+#lightboxCaption {
+	float: left;
+}
+
+#keyboardMsg {
+	float: right;
+}
+
+#closeButton {
+	top: 5px;
+	right: 5px;
+}
+
+#lightbox img {
+	border: none;
+	clear: both;
+}
+
+#overlay img {
+	border: none;
+}
+
+#overlay {
+	color: transparent;
+	background-image: url(.dthumb/overlay.png);
+}
+
+	</style>
+</head>
+<body><div>

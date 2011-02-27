@@ -30,7 +30,7 @@ sub new {
 	$ref->{data} = App::Dthumb::Data->new();
 	$ref->{tar}  = Archive::Tar->new();
 
-	$ref->{html} = $ref->{data}->html_start();
+	$ref->{html} = $ref->{data}->get('html_start');
 
 	$ref->{current_file_id} = 0;
 
@@ -86,7 +86,6 @@ sub create_files {
 	my ($self) = @_;
 	my $thumbdir = $self->{config}->{dir_thumbs};
 	my $datadir  = $self->{config}->{dir_data};
-	my $fh;
 
 	if (not -d $thumbdir) {
 		mkdir($thumbdir);
@@ -96,21 +95,11 @@ sub create_files {
 		mkdir($datadir);
 	}
 
-	open($fh, '>', "${datadir}/lightbox.js");
-	print {$fh} $self->{data}->lightbox();
-	close($fh);
-
-	open($fh, '>', "${datadir}/overlay.png");
-	print {$fh} $self->{data}->overlay_png();
-	close($fh);
-
-	open($fh, '>', "${datadir}/loading.gif");
-	print {$fh} $self->{data}->loading_gif();
-	close($fh);
-
-	open($fh, '>', "${datadir}/close.gif");
-	print {$fh} $self->{data}->close_gif();
-	close($fh);
+	for my $file (qw(lightbox.js overlay.png loading.gif close.gif)) {
+		open(my $fh, '>', "${datadir}/${file}");
+		print {$fh} $self->{data}->get($file);
+		close($fh);
+	}
 }
 
 sub delete_old_thumbnails {
@@ -191,7 +180,7 @@ sub create_thumbnail_image {
 sub write_out_html {
 	my ($self) = @_;
 
-	$self->{html} .= $self->{data}->html_end();
+	$self->{html} .= $self->{data}->get('html_end');
 
 	open(my $fh, '>', $self->{config}->{file_index});
 	print {$fh} $self->{html};
