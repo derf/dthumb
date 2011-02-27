@@ -1,3 +1,7 @@
+git HEAD
+
+    * Add progressbar, introduces new dependency Time::Progress
+
 dthumb 0.1 - Sun Feb 27 2011
 
     * Support for jpg/png with Image::Imlib2
