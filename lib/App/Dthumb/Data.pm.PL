@@ -4,7 +4,6 @@ use warnings;
 use 5.010;
 use autodie;
 use MIME::Base64 qw(encode_base64);
-use IO::Handle;
 
 my ($out_file) = @ARGV;
 
@@ -19,8 +18,7 @@ for my $file (readdir($share_dh)) {
 	}
 
 	open(my $fh, '<', "share/${file}");
-	$fh->input_record_separator(undef);
-	my $content = <$fh>;
+	my $content = do { local $/ = undef; <$fh> };
 	close($fh);
 
 	if ($file =~ qr{ \. (png | gif) $ }ox) {
