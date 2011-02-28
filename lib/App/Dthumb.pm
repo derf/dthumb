@@ -1,5 +1,40 @@
 package App::Dthumb;
 
+
+=head1 NAME
+
+App::Dthumb - Generate thumbnail index for a set of images
+
+=head1 SYNOPSIS
+
+    use App::Dthumb;
+    use Getopt::Long qw(:config no_ignore_case);
+    
+    my $opt = {};
+    
+    GetOptions(
+    	$opt,
+    	qw{
+    		help|h
+    		size|d=i
+    		spacing|s=f
+    		no-lightbox|L
+    		no-names|n
+    		quality|q=i
+    		version|v
+    	},
+    );
+    
+    my $dthumb = App::Dthumb->new($opt);
+    $dthumb->run();
+
+=head1 VERSION
+
+This manual documents App::Dthumb version 0.1
+
+=cut
+
+
 use strict;
 use warnings;
 use autodie;
@@ -17,6 +52,67 @@ our @EXPORT_OK = ();
 our $VERSION = '0.1';
 
 STDERR->autoflush(1);
+
+
+=head1 METHODS
+
+=head2 new($conf)
+
+Returns a new B<App::Dthumb> object. As you can see in the SYNOPSIS, $conf is
+designed so that it can be directly fed by B<Getopt::Long>.
+
+Valid hash keys are:
+
+=over
+
+=item B<help> => I<bool>
+
+If true, prints a short help message to STDOUT and quits
+
+Default: false
+
+=item B<size> => I<int>
+
+Maximum image size in pixels, either width or height (depending on image
+orientation)
+
+Default: 200
+
+=item B<spacing> => I<float>
+
+Spacing between image boxes. 1.0 means each box is exactly as wide as the
+maximum image width (see B<size>), 1.1 means slightly larger, et cetera
+
+Default: 1.1
+
+=item B<no-lightbox> => I<bool>
+
+Do not show include javascript lightbox code
+
+Default: false
+
+=item B<no-names> => I<bool>
+
+Do not show image name below thumbnail
+
+Default: false
+
+=item B<quality> => I<0 .. 100>
+
+Thumbnail image quality
+
+Default: 75
+
+=item B<version> => I<bool>
+
+If true, prints version information to STDOUT and quits
+
+Default: false
+
+=back
+
+=cut
+
 
 sub new {
 	my ($obj, $conf) = @_;
@@ -45,6 +141,14 @@ sub new {
 	return bless($ref, $obj);
 }
 
+
+=head2 run
+
+Run dthumb.  Read all files, create thumbnails, write index.xhtml, and so on.
+
+=cut
+
+
 sub run {
 	my ($self) = @_;
 
@@ -55,6 +159,22 @@ sub run {
 	$self->create_thumbnails();
 	$self->write_out_html();
 }
+
+
+=head1 INTERNALS
+
+The following methods are internal only and do not need to be called by
+external scripts.  This documentation is only for people working on
+B<App::Dthumb> itself.  All of them are object-oriented, so need to be called
+as $dthumb->something().
+
+=head2 check_cmd_flags
+
+Check if version/help flags in the config are set.  If so, print the
+corresponding text to STDOUT and quit.
+
+=cut
+
 
 sub check_cmd_flags {
 	my ($self) = @_;
@@ -68,6 +188,16 @@ sub check_cmd_flags {
 		exit 0;
 	}
 }
+
+
+=head2 read_directories
+
+Store all image files in the current directory in $self->{files} (arrayref),
+and all files in F<.thumbs> which do not have a corresponding full-size image
+in $self->{old_thumbnails}.  $self->{files} is sorted case-insensitively.
+
+=cut
+
 
 sub read_directories {
 	my ($self) = @_;
@@ -104,6 +234,18 @@ sub read_directories {
 	);
 }
 
+
+=head2 create_files
+
+Makes sure the F<.thumbs> directory exists.
+
+If $self->{conf}->{lightbox} is true (which is the default), also creates the
+F<.dthumb> directory and fills it with F<lightbox.js>, F<overlay.png>,
+F<loading.gif> and F<close.gif>.
+
+=cut
+
+
 sub create_files {
 	my ($self) = @_;
 	my $thumbdir = $self->{config}->{dir_thumbs};
@@ -127,6 +269,15 @@ sub create_files {
 	}
 }
 
+
+=head2 delete_old_thumbnails
+
+Unlink all no longer required thumbnails (those saved in
+$self->{old_thumbnails}).
+
+=cut
+
+
 sub delete_old_thumbnails {
 	my ($self) = @_;
 	my $thumbdir = $self->{config}->{dir_thumbs};
@@ -135,6 +286,15 @@ sub delete_old_thumbnails {
 		unlink("${thumbdir}/${file}");
 	}
 }
+
+
+=head2 create_thumbnails
+
+Iterate over all files in $self->{files}, print a progress bar to STDERR and
+call B<create_thumbnail_html> and B<create_thumbnail_image> for each.
+
+=cut
+
 
 sub create_thumbnails {
 	my ($self) = @_;
@@ -151,6 +311,14 @@ sub create_thumbnails {
 	}
 	print "\n";
 }
+
+
+=head2 create_thumbnail_html($file)
+
+Append the necessary lines for $file to the HTML.
+
+=cut
+
 
 sub create_thumbnail_html {
 	my ($self, $file) = @_;
@@ -183,6 +351,15 @@ sub create_thumbnail_html {
 	$self->{html} .= "</div>\n";
 }
 
+
+=head2 create_thumbnail_image($file)
+
+Load F<$file> and save a resized version in F<.thumbs/$file>.  Returns if the
+thumbnail file already exists, so far it doesn't do any further checks.
+
+=cut
+
+
 sub create_thumbnail_image {
 	my ($self, $file) = @_;
 	my $thumbdir = $self->{config}->{dir_thumbs};
@@ -208,6 +385,14 @@ sub create_thumbnail_image {
 	$thumb->set_quality($self->{config}->{quality});
 	$thumb->save("${thumbdir}/${file}");
 }
+
+
+=head2 write_out_html
+
+Write the cached HTML data to F<index.xhtml>.
+
+=cut
+
 
 sub write_out_html {
 	my ($self) = @_;
@@ -236,3 +421,25 @@ sub write_out_html {
 #}
 
 1;
+
+__END__
+
+=head1 DEPENDENCIES
+
+=over
+
+=item * App::Dthumb::Data
+
+=item * Image::Imlib2
+
+=item * Time::Progress
+
+=back
+
+=head1 AUTHOR
+
+Copyright (C) 2009-2011 by Daniel Friesel E<gt>derf@chaosdorf.deE<lt>
+
+=head1 LICENSE
+
+    0. You just DO WHAT THE FUCK YOU WANT TO.
