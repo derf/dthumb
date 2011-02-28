@@ -45,13 +45,9 @@ use base 'Exporter';
 use App::Dthumb::Data;
 use Cwd;
 use Image::Imlib2;
-use IO::Handle;
-use Time::Progress;
 
 our @EXPORT_OK = ();
 our $VERSION = '0.1';
-
-STDERR->autoflush(1);
 
 
 =head1 METHODS
@@ -127,7 +123,6 @@ sub new {
 	$ref->{config} = $conf;
 
 	$ref->{data} = App::Dthumb::Data->new();
-	$ref->{timer} = Time::Progress->new();
 
 	$ref->{html} = $ref->{data}->get('html_start');
 
@@ -139,26 +134,6 @@ sub new {
 
 	return bless($ref, $obj);
 }
-
-
-=head2 run
-
-Run dthumb.  Read all files, create thumbnails, write index.xhtml, and so on.
-
-=cut
-
-
-sub run {
-	my ($self) = @_;
-
-	$self->check_cmd_flags();
-	$self->read_directories();
-	$self->create_files();
-	$self->delete_old_thumbnails();
-	$self->create_thumbnails();
-	$self->write_out_html();
-}
-
 
 =head1 INTERNALS
 
@@ -226,11 +201,6 @@ sub read_directories {
 
 	@{$self->{files}} = sort { lc($a) cmp lc($b) } @files;
 	@{$self->{old_thumbnails}} = @old_thumbs;
-
-	$self->{timer}->attr(
-		min => 1,
-		max => scalar @files,
-	);
 }
 
 
@@ -288,28 +258,17 @@ sub delete_old_thumbnails {
 }
 
 
-=head2 create_thumbnails
+=head2 get_files
 
-Iterate over all files in $self->{files}, print a progress bar to STDERR and
-call B<create_thumbnail_html> and B<create_thumbnail_image> for each.
+Returns an array of all image files found by B<read_directories>.
 
 =cut
 
 
-sub create_thumbnails {
+sub get_files {
 	my ($self) = @_;
 
-	for my $file (@{$self->{files}}) {
-
-		print STDERR $self->{timer}->report(
-			"\r\e[KCreating Thumbnails: %p done, %L elapsed, %E remaining",
-			++$self->{current_file_id},
-		);
-
-		$self->create_thumbnail_html($file);
-		$self->create_thumbnail_image($file);
-	}
-	print "\n";
+	return @{$self->{files}};
 }
 
 
@@ -403,22 +362,6 @@ sub write_out_html {
 	print {$fh} $self->{html};
 	close($fh);
 }
-
-#sub print_progress {
-#	my ($self) = @_;
-#	my $num  = $self->{current_file_id};
-#	my $name = $self->{current_file_name};
-#
-#	if (($num % 60) == 0) {
-#		if ($number) {
-#			printf(" %4d/%d\n", $number, scalar(@files));
-#		}
-#		printf('[%3d%%] ', $number * 100 / @files);
-#	} elsif (($number % 10) == 0) {
-#		print ' ';
-#	}
-#	return;
-#}
 
 1;
 

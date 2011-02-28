@@ -8,8 +8,13 @@ use autodie;
 
 use App::Dthumb;
 use Getopt::Long qw(:config no_ignore_case);
+use IO::Handle;
+use Time::Progress;
+
+STDERR->autoflush(1);
 
 my $opt = {};
+my $id = 1;
 
 GetOptions(
 	$opt,
@@ -25,8 +30,31 @@ GetOptions(
 ) or die("Please see perldoc -F $0\n");
 
 my $dthumb = App::Dthumb->new($opt);
+my $timer  = Time::Progress->new();
 
-$dthumb->run();
+
+$dthumb->check_cmd_flags();
+$dthumb->read_directories();
+$dthumb->create_files();
+$dthumb->delete_old_thumbnails();
+
+$timer->attr(
+	min => 1,
+	max => scalar $dthumb->get_files(),
+);
+
+for my $file ($dthumb->get_files()) {
+	print STDERR $timer->report(
+		"\r\e[KCreating Thumbnails: %p done, %L elapsed, %E remaining",
+		$id++,
+	);
+
+	$dthumb->create_thumbnail_html($file);
+	$dthumb->create_thumbnail_image($file);
+}
+print "\n";
+
+$dthumb->write_out_html();
 
 __END__
 
