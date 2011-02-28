@@ -76,6 +76,12 @@ B<dthumb> will create an F<index.xhtml> with a list (thumbnails) of
 all images found in the current directory; the thumbnails will link to the
 images.
 
+It uses a javascript lightbox called B<shadowbox> (see
+E<gt>http://www.shadowbox-js.com/E<gt>) to display the images.  To view the
+images without the lightbox, either disable javascript, use the B<-L>
+commandline switch or open images by clicking on the filename instead of the
+thumbnail.
+
 Note that recursion is not yet supported.
 
 During operation, B<dthumb> will show its progress on STDERR.
