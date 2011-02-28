@@ -10,6 +10,7 @@ my $build = Module::Build->new(
 		'Test::Compile' => 0,
 		'Test::Pod' => 0,
 	},
+	dist_abstract => 'Generate Thumbnails + Index for a set of images',
 	dist_name => 'dthumb',
 	module_name => 'App::Dthumb',
 	license => 'unrestricted',
@@ -19,11 +20,13 @@ my $build = Module::Build->new(
 	requires => {
 		'perl' => '5.10.0',
 		'autodie' => 0,
-		'Archive::Tar' => 0,
 		'Cwd' => 0,
 		'Data::Section' => 0,
 		'Getopt::Long' => 0,
 		'Image::Imlib2' => 0,
+		'IO::Handle' => 0,
+		'MIME::Base64' => 0,
+		'Time::Progress' => 0,
 	},
 );
 $build->create_build_script();

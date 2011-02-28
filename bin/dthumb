@@ -13,11 +13,13 @@ my $opt = {};
 GetOptions(
 	$opt,
 	qw{
+		help|h
 		size|d=i
 		spacing|s=f
+		no-lightbox|L
 		no-names|n
 		quality|q=i
-		archive|x
+		version|v
 	},
 ) or die("Please see perldoc -F $0\n");
 
@@ -41,21 +43,19 @@ dthumb will create an F<index.xhtml> with a list (thumbnails) of
 all images found in the current directory; the thumbnails will link to the
 images.
 
-The F<index.xhtml> file will always be created in the current directory, the
-thumbnails will be saved in F<.thumbs> below it.
-
 Note that recursion is not yet supported.
+
+During operation, B<dthumb> will show its progress on STDERR.
 
 =head1 OPTIONS
 
 =over
 
-=item B<-x>, B<--archive>
+=item B<-L>, B<--no-lightbox>
 
-Create (and link) an "image.tar" archive containing all full-size image files.
-All but the last directories in the files' path are stripped, besides that the
-directory structure is preserved. So, if you run dthumb -x in
-.../mydir/, the archive will contain mydir/1.jpg, mydir/2.jpg etc.
+Disable Javascript lightbox.  Note that in the current implementations, this
+simple skips installation of the data files.  The lightbox link in the HTML
+will still be written, leading to 404s on the server.  This will be fixed.
 
 =item B<-n>, B<--no-names>
 
@@ -88,24 +88,31 @@ Zero upon success, non-zero otherwise.
 
 None.
 
+=head1 FILES
+
+B<dthumb> always works in the current working directory.  It will create the
+file F<index.xhtml>, in which the HTML code for the thumbnail list is saved.
+
+It also creates two directories: F<.thumbs> for the thumbnail images, and
+F<.dthumb>, which contains various data (so far icons and javascript code).
+
 =head1 DEPENDENCIES
 
 =over
 
 =item * autodie (Included in core as of perl 5.10.1)
 
-=item * Archive::Tar (subject to change)
+=item * Data::Section
 
 =item * Image::Imlib2
+
+=item * Time::Progress
 
 =back
 
 =head1 BUGS AND LIMITATIONS
 
 Thumbnails of changed images are not yet recreated.
-
-When used with B<-x>, the completer tar archive is kept in memory, leading to
-enormous memory usage and possibly out-of-memory errors.
 
 =head1 AUTHOR
 

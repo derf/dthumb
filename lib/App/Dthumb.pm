@@ -8,14 +8,15 @@ use 5.010;
 use base 'Exporter';
 
 use App::Dthumb::Data;
-use Archive::Tar;
 use Cwd;
 use Image::Imlib2;
+use IO::Handle;
+use Time::Progress;
 
 our @EXPORT_OK = ();
 our $VERSION = '0.1';
 
-local $| = 1;
+STDERR->autoflush(1);
 
 sub new {
 	my ($obj, $conf) = @_;
@@ -24,11 +25,13 @@ sub new {
 	$conf->{size}    //= 200;
 	$conf->{spacing} //= 1.1;
 	$conf->{quality} //= 75;
+	$conf->{lightbox}  = !$conf->{'no-lightbox'};
+	$conf->{names}     = !$conf->{'no-names'};
 
 	$ref->{config} = $conf;
 
 	$ref->{data} = App::Dthumb::Data->new();
-	$ref->{tar}  = Archive::Tar->new();
+	$ref->{timer} = Time::Progress->new();
 
 	$ref->{html} = $ref->{data}->get('html_start');
 
@@ -44,11 +47,25 @@ sub new {
 sub run {
 	my ($self) = @_;
 
+	$self->check_cmd_flags();
 	$self->read_directories();
 	$self->create_files();
 	$self->delete_old_thumbnails();
 	$self->create_thumbnails();
 	$self->write_out_html();
+}
+
+sub check_cmd_flags {
+	my ($self) = @_;
+
+	if ($self->{config}->{version}) {
+		say "dthumb version ${VERSION}";
+		exit 0;
+	}
+	if ($self->{config}->{help}) {
+		say "Please refer to perldoc -F $0 (or man dthumb)";
+		exit 0;
+	}
 }
 
 sub read_directories {
@@ -79,6 +96,11 @@ sub read_directories {
 
 	@{$self->{files}} = sort { lc($a) cmp lc($b) } @files;
 	@{$self->{old_thumbnails}} = @old_thumbs;
+
+	$self->{timer}->attr(
+		min => 1,
+		max => scalar @files,
+	);
 }
 
 sub create_files {
@@ -90,15 +112,18 @@ sub create_files {
 		mkdir($thumbdir);
 	}
 
-	if (not -d $datadir) {
-		mkdir($datadir);
-	}
+	if ($self->{config}->{lightbox}) {
 
-	for my $file (qw(close.png loading.gif next.png pause.png play.png
-			previous.png shadowbox.css shadowbox.js)) {
-		open(my $fh, '>', "${datadir}/${file}");
-		print {$fh} $self->{data}->get($file);
-		close($fh);
+		if (not -d $datadir) {
+			mkdir($datadir);
+		}
+
+		for my $file (qw(close.png loading.gif next.png pause.png play.png
+				previous.png shadowbox.css shadowbox.js)) {
+			open(my $fh, '>', "${datadir}/${file}");
+			print {$fh} $self->{data}->get($file);
+			close($fh);
+		}
 	}
 }
 
@@ -115,15 +140,22 @@ sub create_thumbnails {
 	my ($self) = @_;
 
 	for my $file (@{$self->{files}}) {
+
+		print STDERR $self->{timer}->report(
+			"\r\e[KCreating Thumbnails: %p done, %L elapsed, %E remaining",
+			++$self->{current_file_id},
+		);
+
 		$self->create_thumbnail_html($file);
 		$self->create_thumbnail_image($file);
 	}
+	print "\n";
 }
 
 sub create_thumbnail_html {
 	my ($self, $file) = @_;
 	my $div_width = $self->{config}->{size} * $self->{config}->{spacing};
-	my $div_height = $div_width + ($self->{config}->{no_names} ? 0 : 10);
+	my $div_height = $div_width + ($self->{config}->{names} ? 10 : 0);
 
 	$self->{html} .= sprintf(
 		"<div style=\"%s; %s; %s; width: %dpx; height: %dpx\">\n",
@@ -140,7 +172,7 @@ sub create_thumbnail_html {
 		$self->{config}->{dir_thumbs},
 		($file) x 2,
 	);
-	if (not $self->{config}->{no_names}) {
+	if ($self->{config}->{names}) {
 		$self->{html} .= sprintf(
 			"\t<br />\n"
 			. "\t<a style=\"%s;\" href=\"%s\">%s</a>\n",
@@ -202,3 +234,5 @@ sub write_out_html {
 #	}
 #	return;
 #}
+
+1;
