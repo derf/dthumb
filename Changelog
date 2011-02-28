@@ -1,6 +1,7 @@
 git HEAD
 
     * Add progressbar, introduces new dependency Time::Progress
+    * Switch from lightbox to shadowbox <http://www.shadowbox-js.com/>
 
 dthumb 0.1 - Sun Feb 27 2011
 
