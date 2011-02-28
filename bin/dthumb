@@ -20,11 +20,12 @@ GetOptions(
 	$opt,
 	qw{
 		help|h
-		size|d=i
-		spacing|s=f
 		no-lightbox|L
 		no-names|n
 		quality|q=i
+		size|d=i
+		spacing|s=f
+		title|t=s
 		version|v
 	},
 ) or die("Please see perldoc -F $0\n");
@@ -113,6 +114,10 @@ So for B<1.1> you have a small border around each image, for B<1.0> you have
 no border at all, etc.
 
 Defaults to 1.1
+
+=item B<-t>, B<--title> I<string>
+
+Set HTML document title. Defaults to the basename of the current directory
 
 =item B<-q>, B<--quality> I<int>
 

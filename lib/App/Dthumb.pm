@@ -114,9 +114,10 @@ sub new {
 	my ($obj, $conf) = @_;
 	my $ref = {};
 
-	$conf->{size}    //= 200;
-	$conf->{spacing} //= 1.1;
-	$conf->{quality} //= 75;
+	$conf->{size}      //= 200;
+	$conf->{spacing}   //= 1.1;
+	$conf->{quality}   //= 75;
+	$conf->{title}     //= (split(qr{/}, cwd()))[-1];
 	$conf->{lightbox}  = !$conf->{'no-lightbox'};
 	$conf->{names}     = !$conf->{'no-names'};
 
@@ -124,13 +125,17 @@ sub new {
 
 	$ref->{data} = App::Dthumb::Data->new();
 
-	$ref->{html} = $ref->{data}->get('html_start');
-
-	$ref->{current_file_id} = 0;
+	$ref->{data}->set_vars(
+		title  => $conf->{title},
+		width  => $conf->{size} * $conf->{spacing} . 'px',
+		height => $conf->{size} * $conf->{spacing} . 'px',
+	);
 
 	$ref->{config}->{file_index}    = 'index.xhtml';
 	$ref->{config}->{dir_thumbs}    = '.thumbs';
 	$ref->{config}->{dir_data}      = '.dthumb';
+
+	$ref->{html} = $ref->{data}->get('html_start');
 
 	return bless($ref, $obj);
 }
@@ -230,8 +235,8 @@ sub create_files {
 			mkdir($datadir);
 		}
 
-		for my $file (qw(close.png loading.gif next.png pause.png play.png
-				previous.png shadowbox.css shadowbox.js)) {
+		for my $file (qw(close.png loading.gif main.css next.png pause.png
+				play.png previous.png shadowbox.css shadowbox.js)) {
 			open(my $fh, '>', "${datadir}/${file}");
 			print {$fh} $self->{data}->get($file);
 			close($fh);
@@ -284,14 +289,8 @@ sub create_thumbnail_html {
 	my $div_width = $self->{config}->{size} * $self->{config}->{spacing};
 	my $div_height = $div_width + ($self->{config}->{names} ? 10 : 0);
 
-	$self->{html} .= sprintf(
-		"<div style=\"%s; %s; %s; width: %dpx; height: %dpx\">\n",
-		'text-align: center',
-		'font-size: 80%',
-		'float: left',
-		$div_width,
-		$div_height,
-	);
+	$self->{html} .= "<div class=\"image-container\">\n";
+
 	$self->{html} .= sprintf(
 		"\t<a rel=\"shadowbox[main]\" href=\"%s\" title=\"%s\">\n"
 		. "\t\t<img src=\"%s/%s\" alt=\"%s\" /></a>\n",
@@ -299,6 +298,7 @@ sub create_thumbnail_html {
 		$self->{config}->{dir_thumbs},
 		($file) x 2,
 	);
+
 	if ($self->{config}->{names}) {
 		$self->{html} .= sprintf(
 			"\t<br />\n"
@@ -307,6 +307,7 @@ sub create_thumbnail_html {
 			($file) x 2,
 		);
 	}
+
 	$self->{html} .= "</div>\n";
 }
 

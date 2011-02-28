@@ -3,6 +3,7 @@ git HEAD
     * Add progressbar, introduces new dependency Time::Progress
     * Switch from lightbox to shadowbox <http://www.shadowbox-js.com/>
     * Show filename in lightbox
+    * The HTML title is now configurable, it defaults to the current directory
 
 dthumb 0.1 - Sun Feb 27 2011
 

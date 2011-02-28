@@ -54,6 +54,11 @@ sub new {
 	return bless($ref, $obj);
 }
 
+sub set_vars {
+	my ($self, %vars) = @_;
+	$self->{replace} = \%vars;
+}
+
 sub get {
 	my ($self, $name) = @_;
 	my $data = $self->section_data($name);
@@ -65,6 +70,15 @@ sub get {
 	if ($name =~ qr{ \. (png | gif) $ }ox) {
 		return decode_base64(${$data});
 	}
+
+	while (my ($key, $value) = each %{$self->{replace}}) {
+		${$data} =~ s{
+			( \<\!-- | /\* )
+				\s+ \$ $key \s+
+			( --\> | \*/ )
+		}{$value}gx;
+	}
+
 	return ${$data};
 }
 
