@@ -35,7 +35,6 @@ sub new {
 	$ref->{current_file_id} = 0;
 
 	$ref->{config}->{file_index}    = 'index.xhtml';
-	$ref->{config}->{file_lightbox} = 'lightbox.js';
 	$ref->{config}->{dir_thumbs}    = '.thumbs';
 	$ref->{config}->{dir_data}      = '.dthumb';
 
@@ -95,7 +94,8 @@ sub create_files {
 		mkdir($datadir);
 	}
 
-	for my $file (qw(lightbox.js overlay.png loading.gif close.gif)) {
+	for my $file (qw(close.png loading.gif next.png pause.png play.png
+			previous.png shadowbox.css shadowbox.js)) {
 		open(my $fh, '>', "${datadir}/${file}");
 		print {$fh} $self->{data}->get($file);
 		close($fh);
@@ -134,7 +134,7 @@ sub create_thumbnail_html {
 		$div_height,
 	);
 	$self->{html} .= sprintf(
-		"\t<a rel=\"lightbox\" href=\"%s\">\n"
+		"\t<a rel=\"shadowbox[main]\" href=\"%s\">\n"
 		. "\t\t<img src=\"%s/%s\" alt=\"%s\" /></a>\n",
 		$file,
 		$self->{config}->{dir_thumbs},

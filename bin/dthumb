@@ -109,11 +109,11 @@ enormous memory usage and possibly out-of-memory errors.
 
 =head1 AUTHOR
 
-Copyright (C) 2009, 2010 by Daniel Friesel E<lt>derf@chaosdorf.deE<gt>
+Copyright (C) 2009, 2010 by Daniel Friesel E<lt>derf@chaosdorf.deE<gt>.
 
-The lightbox code is (C) by Lokesh Dhakar
-E<lt>http://huddletogether.com/projects/lightbox/E<gt>, licensed under
-CC-BY-2.5
+The shadowbox code is (C) 2007-2010 by Michael J. I. Jackson.  See
+E<lt>http://www.shadowbox-js.com/E<gt> and especially
+E<lt>http://www.shadowbox-js.com/LICENSEE<gt>.
 
 =head1 LICENSE
 
