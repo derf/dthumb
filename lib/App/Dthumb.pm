@@ -293,9 +293,9 @@ sub create_thumbnail_html {
 		$div_height,
 	);
 	$self->{html} .= sprintf(
-		"\t<a rel=\"shadowbox[main]\" href=\"%s\">\n"
+		"\t<a rel=\"shadowbox[main]\" href=\"%s\" title=\"%s\">\n"
 		. "\t\t<img src=\"%s/%s\" alt=\"%s\" /></a>\n",
-		$file,
+		($file) x 2,
 		$self->{config}->{dir_thumbs},
 		($file) x 2,
 	);
