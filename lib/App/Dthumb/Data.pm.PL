@@ -67,19 +67,23 @@ sub get {
 		die("No such data: ${name}\n");
 	}
 
+	$data = ${$data};
+
+	chomp($data);
+
 	if ($name =~ qr{ \. (png | gif) $ }ox) {
-		return decode_base64(${$data});
+		return decode_base64($data);
 	}
 
 	while (my ($key, $value) = each %{$self->{replace}}) {
-		${$data} =~ s{
+		$data =~ s{
 			( \<\!-- | /\* )
 				\s+ \$ $key \s+
 			( --\> | \*/ )
 		}{$value}gx;
 	}
 
-	return ${$data};
+	return $data;
 }
 
 1;
