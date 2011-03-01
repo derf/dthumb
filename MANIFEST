@@ -1,0 +1,24 @@
+bin/dthumb
+Build.PL
+Changelog
+lib/App/Dthumb.pm
+lib/App/Dthumb/Data.pm
+lib/App/Dthumb/Data.pm.PL
+MANIFEST			This list of files
+MANIFEST.SKIP
+README
+share/close.png
+share/html_end
+share/html_start
+share/loading.gif
+share/main.css
+share/next.png
+share/pause.png
+share/play.png
+share/previous.png
+share/shadowbox.css
+share/shadowbox.js
+t/00-compile-pm.t
+t/01-compile-pl.t
+t/05-synopsis.t
+t/10-pod.t
