@@ -4,6 +4,7 @@
 #     You just DO WHAT THE FUCK YOU WANT TO
 use strict;
 use warnings;
+use 5.010;
 use autodie;
 
 use App::Dthumb;
@@ -33,8 +34,16 @@ GetOptions(
 my $dthumb = App::Dthumb->new(%{$opt});
 my $timer  = Time::Progress->new();
 
+if ($opt->{version}) {
+	say "dthumb version " . $dthumb->version();
+	exit 0;
+}
+if ($opt->{help}) {
+	exec('perldoc', '-F', $0);
+	die("Please see 'perldoc -F $0' or 'man dthumb'\n");
+}
 
-$dthumb->check_cmd_flags();
+
 $dthumb->read_directories();
 $dthumb->create_files();
 $dthumb->delete_old_thumbnails();
@@ -69,7 +78,7 @@ B<dthumb> [I<options>]
 
 =head1 VERSION
 
-This manual documents B<dthumb> version 0.1
+This manual documents B<dthumb> version 0.2
 
 =head1 DESCRIPTION
 

@@ -149,27 +149,6 @@ external scripts.  This documentation is only for people working on
 B<App::Dthumb> itself.  All of them are object-oriented, so need to be called
 as $dthumb->something().
 
-=head2 check_cmd_flags
-
-Check if version/help flags in the config are set.  If so, print the
-corresponding text to STDOUT and quit.
-
-=cut
-
-
-sub check_cmd_flags {
-	my ($self) = @_;
-
-	if ($self->{config}->{version}) {
-		say "dthumb version ${VERSION}";
-		exit 0;
-	}
-	if ($self->{config}->{help}) {
-		say "Please refer to perldoc -F $0 (or man dthumb)";
-		exit 0;
-	}
-}
-
 
 =head2 read_directories
 
