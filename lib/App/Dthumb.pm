@@ -376,8 +376,6 @@ __END__
 
 =item * Image::Imlib2
 
-=item * Time::Progress
-
 =back
 
 =head1 AUTHOR
