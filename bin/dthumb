@@ -30,7 +30,7 @@ GetOptions(
 	},
 ) or die("Please see perldoc -F $0\n");
 
-my $dthumb = App::Dthumb->new($opt);
+my $dthumb = App::Dthumb->new(%{$opt});
 my $timer  = Time::Progress->new();
 
 

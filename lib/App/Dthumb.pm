@@ -47,7 +47,7 @@ use Cwd;
 use Image::Imlib2;
 
 our @EXPORT_OK = ();
-our $VERSION = '0.1';
+our $VERSION = '0.2';
 
 
 =head1 METHODS
@@ -111,29 +111,31 @@ Default: false
 
 
 sub new {
-	my ($obj, $conf) = @_;
+	my ($obj, %conf) = @_;
 	my $ref = {};
 
-	$conf->{size}      //= 200;
-	$conf->{spacing}   //= 1.1;
-	$conf->{quality}   //= 75;
-	$conf->{title}     //= (split(qr{/}, cwd()))[-1];
-	$conf->{lightbox}  = !$conf->{'no-lightbox'};
-	$conf->{names}     = !$conf->{'no-names'};
+	$conf{size}       //= 200;
+	$conf{spacing}    //= 1.1;
+	$conf{quality}    //= 75;
+	$conf{title}      //= (split(qr{/}, cwd()))[-1];
+	$conf{file_index} //= 'index.xhtml';
+	$conf{dir_thumbs} //= '.thumbs';
+	$conf{dir_data}   //= '.dthumb';
+	
 
-	$ref->{config} = $conf;
+	# helpers to directly pass GetOptions results
+	$conf{lightbox}  //= !$conf{'no-lightbox'};
+	$conf{names}     //= !$conf{'no-names'};
+
+	$ref->{config} = \%conf;
 
 	$ref->{data} = App::Dthumb::Data->new();
 
 	$ref->{data}->set_vars(
-		title  => $conf->{title},
-		width  => $conf->{size} * $conf->{spacing} . 'px',
-		height => $conf->{size} * $conf->{spacing} . 'px',
+		title  => $conf{title},
+		width  => $conf{size} * $conf{spacing} . 'px',
+		height => $conf{size} * $conf{spacing} . 'px',
 	);
-
-	$ref->{config}->{file_index}    = 'index.xhtml';
-	$ref->{config}->{dir_thumbs}    = '.thumbs';
-	$ref->{config}->{dir_data}      = '.dthumb';
 
 	$ref->{html} = $ref->{data}->get('html_start');
 
@@ -362,6 +364,10 @@ sub write_out_html {
 	open(my $fh, '>', $self->{config}->{file_index});
 	print {$fh} $self->{html};
 	close($fh);
+}
+
+sub version {
+	return $VERSION;
 }
 
 1;
