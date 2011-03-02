@@ -216,8 +216,7 @@ sub create_files {
 			mkdir($datadir);
 		}
 
-		for my $file (qw(close.png loading.gif main.css next.png pause.png
-				play.png previous.png shadowbox.css shadowbox.js)) {
+		for my $file ($self->{data}->list_archived()) {
 			open(my $fh, '>', "${datadir}/${file}");
 			print {$fh} $self->{data}->get($file);
 			close($fh);

@@ -8,8 +8,8 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 README
 share/close.png
-share/html_end
-share/html_start
+share/html_end.dthumb
+share/html_start.dthumb
 share/loading.gif
 share/main.css
 share/next.png

@@ -59,6 +59,11 @@ sub set_vars {
 	$self->{replace} = \%vars;
 }
 
+sub list_archived {
+	my ($self) = @_;
+	return grep { ! /\.dthumb$/ } $self->section_data_names();
+}
+
 sub get {
 	my ($self, $name) = @_;
 	my $data = $self->section_data($name);
