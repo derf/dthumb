@@ -137,7 +137,7 @@ sub new {
 		height => $conf{size} * $conf{spacing} . 'px',
 	);
 
-	$ref->{html} = $ref->{data}->get('html_start');
+	$ref->{html} = $ref->{data}->get('html_start.dthumb');
 
 	return bless($ref, $obj);
 }
@@ -337,7 +337,7 @@ Write the cached HTML data to F<index.xhtml>.
 sub write_out_html {
 	my ($self) = @_;
 
-	$self->{html} .= $self->{data}->get('html_end');
+	$self->{html} .= $self->{data}->get('html_end.dthumb');
 
 	open(my $fh, '>', $self->{config}->{file_index});
 	print {$fh} $self->{html};
