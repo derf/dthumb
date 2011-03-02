@@ -272,7 +272,7 @@ sub create_thumbnail_html {
 	$self->{html} .= "<div class=\"image-container\">\n";
 
 	$self->{html} .= sprintf(
-		"\t<a rel=\"shadowbox[main]\" href=\"%s\" title=\"%s\">\n"
+		"\t<a rel=\"lightbox\" href=\"%s\" title=\"%s\">\n"
 		. "\t\t<img src=\"%s/%s\" alt=\"%s\" /></a>\n",
 		($file) x 2,
 		$self->{config}->{dir_thumbs},

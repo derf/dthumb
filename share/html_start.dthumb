@@ -5,12 +5,7 @@
 	<title><!-- $title --></title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 	<link rel="stylesheet" type="text/css" href=".dthumb/main.css"/>
-	<link rel="stylesheet" type="text/css" href=".dthumb/shadowbox.css"/>
-	<script type="text/javascript" src=".dthumb/shadowbox.js"></script>
-	<script type="text/javascript">
-		Shadowbox.init({
-			animate: false
-		});
-	</script>
+	<link rel="stylesheet" type="text/css" href=".dthumb/lightbox.css"/>
+	<script type="text/javascript" src=".dthumb/lightbox.js"></script>
 </head>
 <body><div>
