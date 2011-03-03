@@ -306,7 +306,11 @@ sub create_thumbnail_image {
 	my $thumbdir = $self->{config}->{dir_thumbs};
 	my $thumb_dim = $self->{config}->{size};
 
-	if (-e "${thumbdir}/${file}" and not $self->{config}->{recreate}) {
+	if (
+			-e "${thumbdir}/${file}"
+			and not $self->{config}->{recreate}
+			and (stat($file))[9] <= (stat("${thumbdir}/${file}"))[9]
+			) {
 		return;
 	}
 

@@ -4,6 +4,7 @@ git HEAD
     * Show filename in lightbox
     * The HTML title is now configurable, it defaults to the current directory
     * Add -r/--recreate option to recreate all thumbnails
+    * Detect changed images via mtime
 
 dthumb 0.1 - Sun Feb 27 2011
 

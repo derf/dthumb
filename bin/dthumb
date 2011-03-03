@@ -173,8 +173,6 @@ F<.dthumb>, which contains various data (so far icons and javascript code).
 
 =head1 BUGS AND LIMITATIONS
 
-Thumbnails of changed images are not yet recreated.
-
 Report issues either by mail to E<lt>derf@chaosdorf.deE<gt> or on
 E<lt>http://github.com/derf/dthumb/issuesE<gt>.
 
