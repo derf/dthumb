@@ -67,6 +67,12 @@ If true, prints a short help message to STDOUT and quits
 
 Default: false
 
+=item B<recreate> => I<bool>
+
+If true, unconditionally recreate all thumbnails.
+
+Default: false
+
 =item B<size> => I<int>
 
 Maximum image size in pixels, either width or height (depending on image
@@ -143,19 +149,10 @@ sub new {
 	return bless($ref, $obj);
 }
 
-=head1 INTERNALS
-
-The following methods are internal only and do not need to be called by
-external scripts.  This documentation is only for people working on
-B<App::Dthumb> itself.  All of them are object-oriented, so need to be called
-as $dthumb->something().
-
-
 =head2 read_directories
 
-Store all image files in the current directory in $self->{files} (arrayref),
-and all files in F<.thumbs> which do not have a corresponding full-size image
-in $self->{old_thumbnails}.  $self->{files} is sorted case-insensitively.
+Read in a list of all image files in the current directory and all files in
+F<.thumbs> which do not have a corresponding full-size image.
 
 =cut
 
@@ -195,9 +192,8 @@ sub read_directories {
 
 Makes sure the F<.thumbs> directory exists.
 
-If $self->{conf}->{lightbox} is true (which is the default), also creates the
-F<.dthumb> directory and fills it with F<lightbox.js>, F<overlay.png>,
-F<loading.gif> and F<close.gif>.
+Also, if lightbox is enabled (which is the default), creates the F<.dthumb>
+directory and fills it with all required files.
 
 =cut
 
@@ -228,8 +224,8 @@ sub create_files {
 
 =head2 delete_old_thumbnails
 
-Unlink all no longer required thumbnails (those saved in
-$self->{old_thumbnails}).
+Unlink all no longer required thumbnails (as previously found by
+B<read_directories>).
 
 =cut
 
@@ -295,8 +291,9 @@ sub create_thumbnail_html {
 
 =head2 create_thumbnail_image($file)
 
-Load F<$file> and save a resized version in F<.thumbs/$file>.  Returns if the
-thumbnail file already exists, so far it doesn't do any further checks.
+Load F<$file> and save a resized version in F<.thumbs/$file>.  Skips thumbnail
+generation if the thumbnail already exists and has a more recent mtime than
+the original file.
 
 =cut
 
@@ -369,7 +366,7 @@ __END__
 
 =head1 AUTHOR
 
-Copyright (C) 2009-2011 by Daniel Friesel E<gt>derf@chaosdorf.deE<lt>
+Copyright (C) 2009-2011 by Daniel Friesel E<lt>derf@chaosdorf.deE<gt>
 
 =head1 LICENSE
 
