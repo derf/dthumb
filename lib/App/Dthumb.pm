@@ -114,9 +114,10 @@ sub new {
 	my ($obj, %conf) = @_;
 	my $ref = {};
 
+	$conf{quality}    //= 75;
+	$conf{recreate}   //= 0;
 	$conf{size}       //= 200;
 	$conf{spacing}    //= 1.1;
-	$conf{quality}    //= 75;
 	$conf{title}      //= (split(qr{/}, cwd()))[-1];
 	$conf{file_index} //= 'index.xhtml';
 	$conf{dir_thumbs} //= '.thumbs';
@@ -305,7 +306,7 @@ sub create_thumbnail_image {
 	my $thumbdir = $self->{config}->{dir_thumbs};
 	my $thumb_dim = $self->{config}->{size};
 
-	if (-e "${thumbdir}/${file}") {
+	if (-e "${thumbdir}/${file}" and not $self->{config}->{recreate}) {
 		return;
 	}
 

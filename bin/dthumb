@@ -24,6 +24,7 @@ GetOptions(
 		no-lightbox|L
 		no-names|n
 		quality|q=i
+		recreate|r
 		size|d=i
 		spacing|s=f
 		title|t=s
@@ -110,6 +111,10 @@ will still be written, leading to 404s on the server.  This will be fixed.
 
 Do not show image names below thumbnails
 
+=item B<-r>, B<--recreate>
+
+Recreate all thumbnails
+
 =item B<-d>, B<--size> I<pixels>
 
 Maximum thumbnail size (either width or height).  Defaults to 200
@@ -177,9 +182,8 @@ E<lt>http://github.com/derf/dthumb/issuesE<gt>.
 
 Copyright (C) 2009-2011 by Daniel Friesel E<lt>derf@chaosdorf.deE<gt>.
 
-The shadowbox code is (C) 2007-2010 by Michael J. I. Jackson.  See
-E<lt>http://www.shadowbox-js.com/E<gt> and especially
-E<lt>http://www.shadowbox-js.com/LICENSEE<gt>.
+The lightbox code is (C) by Lokesh Dhakar
+<http://www.huddletogether.com/projects/lightbox/>.
 
 =head1 LICENSE
 
