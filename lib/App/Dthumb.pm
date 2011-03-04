@@ -61,6 +61,18 @@ Valid hash keys are:
 
 =over
 
+=item B<dir_images> => I<directory>
+
+Set base directory for image reading, data creation etc.
+
+Default: F<.> (current working directory)
+
+=item B<file_index> => I<file>
+
+Set name of the html index file
+
+Default: F<index.xhtml>
+
 =item B<lightbox> => I<bool>
 
 Include and use javascript lightbox code
@@ -115,8 +127,10 @@ sub new {
 	$conf{title}      //= (split(qr{/}, cwd()))[-1];
 
 	$conf{file_index} //= 'index.xhtml';
-	$conf{dir_thumbs} //= '.thumbs';
-	$conf{dir_data}   //= '.dthumb';
+	$conf{dir_images} //= '.';
+
+	$conf{dir_data}   = "$conf{dir_images}/.dthumb";
+	$conf{dir_thumbs} = "$conf{dir_images}/.thumbs";
 
 	# helpers to directly pass GetOptions results
 	$conf{lightbox}  //= ( $conf{'no-lightbox'} ? 0 : 1 );
@@ -148,14 +162,14 @@ F<.thumbs> which do not have a corresponding full-size image.
 sub read_directories {
 	my ($self) = @_;
 	my $thumbdir = $self->{config}->{dir_thumbs};
-	my $imgdir   = '.';
+	my $imgdir   = $self->{config}->{dir_images};
 	my $dh;
 	my (@files, @old_thumbs);
 
 	opendir($dh, $imgdir);
 
 	for my $file (readdir($dh)) {
-		if (-f $file and $file =~ qr{ \. (png | jp e? g) $ }iox) {
+		if (-f "${imgdir}/${file}" and $file =~ qr{ \. (png | jp e? g) $ }iox) {
 			push(@files, $file);
 		}
 	}
@@ -164,7 +178,7 @@ sub read_directories {
 	if (-d $thumbdir) {
 		opendir($dh, $thumbdir);
 		for my $file (readdir($dh)) {
-			if ($file =~ qr{^ [^.] }ox and not -f $file) {
+			if ($file =~ qr{^ [^.] }ox and not -f "${imgdir}/${file}") {
 				push(@old_thumbs, $file);
 			}
 		}
