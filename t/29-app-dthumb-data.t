@@ -12,7 +12,7 @@ my @files = grep { /^[^.]/ } readdir($share);
 closedir($share);
 
 plan(
-	tests => 1 + scalar @files,
+	tests => 2 + scalar @files,
 );
 
 my $dthumb = App::Dthumb::Data->new();
@@ -26,3 +26,5 @@ for my $file (@files) {
 
 	is($dthumb->get($file), $data, "\$dthumb->get($file)");
 }
+
+is($dthumb->get('404notfound'), undef, '$dthumb->get on non-existing file');

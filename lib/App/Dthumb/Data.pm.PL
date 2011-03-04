@@ -123,7 +123,8 @@ sub list_archived {
 
 =head2 get($filename)
 
-Returns the exact content of share/$filename.
+Returns the exact content of share/$filename (undef if no such file was
+saved).
 
 =cut
 
@@ -133,7 +134,7 @@ sub get {
 	my $data = $self->section_data($name);
 
 	if (not $data) {
-		die("No such data: ${name}\n");
+		return undef;
 	}
 
 	$data = ${$data};
