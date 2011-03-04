@@ -61,11 +61,11 @@ Valid hash keys are:
 
 =over
 
-=item B<help> => I<bool>
+=item B<lightbox> => I<bool>
 
-If true, prints a short help message to STDOUT and quits
+Include and use javascript lightbox code
 
-Default: false
+Default: true
 
 =item B<recreate> => I<bool>
 
@@ -87,29 +87,17 @@ maximum image width (see B<size>), 1.1 means slightly larger, et cetera
 
 Default: 1.1
 
-=item B<no-lightbox> => I<bool>
+=item B<names> => I<bool>
 
-Do not show include javascript lightbox code
+Show image name below thumbnail
 
-Default: false
-
-=item B<no-names> => I<bool>
-
-Do not show image name below thumbnail
-
-Default: false
+Default: true
 
 =item B<quality> => I<0 .. 100>
 
 Thumbnail image quality
 
 Default: 75
-
-=item B<version> => I<bool>
-
-If true, prints version information to STDOUT and quits
-
-Default: false
 
 =back
 
@@ -125,10 +113,10 @@ sub new {
 	$conf{size}       //= 200;
 	$conf{spacing}    //= 1.1;
 	$conf{title}      //= (split(qr{/}, cwd()))[-1];
+
 	$conf{file_index} //= 'index.xhtml';
 	$conf{dir_thumbs} //= '.thumbs';
 	$conf{dir_data}   //= '.dthumb';
-	
 
 	# helpers to directly pass GetOptions results
 	$conf{lightbox}  //= !$conf{'no-lightbox'};
