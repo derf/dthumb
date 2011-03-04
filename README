@@ -1,19 +1,30 @@
-dthumb - Create static HTML thumbnail list for images
+dthumb - Generate Thumbnails + Index for a set of images
+--------------------------------------------------------
 
-Requires: 
+* <http://derf.homelinux.org/projects/dthumb/>
+
+
+Dependencies
+------------
+
  * perl version 5.10 or newer
  * Data::Section
  * Image::Imlib2
  * Time::Progress
 
-Installation:
+Installation
+------------
 
-> perl Build.PL
-> ./Build
-> sudo ./Build install
+$ perl Build.PL
+$ perl Build
+$ sudo perl Build install
 
 You can then run 'man dthumb' for more information.
 
+Testing
+-------
 
-You may also run './Build test'. This will require the Test::More,
-Test::Compile and Test::Pod modules.
+$ perl Build test
+
+Note that this will require the Test::More, Test::Compile and Test::Pod
+modules.
