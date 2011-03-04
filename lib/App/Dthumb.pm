@@ -119,8 +119,8 @@ sub new {
 	$conf{dir_data}   //= '.dthumb';
 
 	# helpers to directly pass GetOptions results
-	$conf{lightbox}  //= !$conf{'no-lightbox'};
-	$conf{names}     //= !$conf{'no-names'};
+	$conf{lightbox}  //= ( $conf{'no-lightbox'} ? 0 : 1 );
+	$conf{names}     //= ( $conf{'no-names'}    ? 0 : 1 );
 
 	$ref->{config} = \%conf;
 
