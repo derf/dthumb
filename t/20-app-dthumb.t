@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 use autodie;
 
-use Test::More tests => 19;
+use Test::More tests => 18;
 
 use_ok('App::Dthumb');
 
@@ -26,7 +26,6 @@ is($dthumb->{config}->{quality} ,  75, 'Default quality');
 is($dthumb->{config}->{recreate},   0, 'Do not recreate');
 is($dthumb->{config}->{size}    , 200, 'Default size');
 is($dthumb->{config}->{spacing} , 1.1, 'Default spacing');
-is($dthumb->{config}->{title}, 'dthumb', 'title is cwd basename');
 
 $dthumb = App::Dthumb->new('no-lightbox' => 1);
 is($dthumb->{config}->{lightbox}, 0, 'Lightbox disabled');

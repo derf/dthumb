@@ -22,3 +22,6 @@ t/05-synopsis.t
 t/10-pod.t
 t/20-app-dthumb.t
 t/29-app-dthumb-data.t
+t/imgdir/.thumbs/invalid.png
+t/imgdir/one.png
+t/imgdir/two.png

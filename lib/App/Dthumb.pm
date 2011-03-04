@@ -30,7 +30,7 @@ App::Dthumb - Generate thumbnail index for a set of images
 
 =head1 VERSION
 
-This manual documents App::Dthumb version 0.1
+This manual documents App::Dthumb version 0.2
 
 =cut
 

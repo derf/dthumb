@@ -28,5 +28,6 @@ my $build = Module::Build->new(
 		'MIME::Base64' => 0,
 		'Time::Progress' => 0,
 	},
+	sign => 1,
 );
 $build->create_build_script();

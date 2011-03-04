@@ -1,4 +1,4 @@
-git HEAD
+dthumb 0.2 - Fri Mar 04 2011
 
     * Add progressbar, introduces new dependency Time::Progress
     * Show filename in lightbox
