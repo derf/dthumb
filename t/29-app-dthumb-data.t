@@ -11,8 +11,10 @@ opendir(my $share, 'share');
 my @files = grep { /^[^.]/ } readdir($share);
 closedir($share);
 
+my @files_archived = sort grep { ! /\.dthumb$/ } @files;
+
 plan(
-	tests => 2 + scalar @files,
+	tests => 3 + scalar @files,
 );
 
 my $dthumb = App::Dthumb::Data->new();
@@ -28,3 +30,6 @@ for my $file (@files) {
 }
 
 is($dthumb->get('404notfound'), undef, '$dthumb->get on non-existing file');
+
+is_deeply([@files_archived], [sort $dthumb->list_archived()],
+	'$dthumb->list_archived skips .dthumb files');
