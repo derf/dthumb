@@ -9,7 +9,7 @@ use Test::More;
 eval "use File::Slurp";
 plan skip_all => 'File::Slurp required' if $@;
 
-plan tests => 9;
+plan tests => 12;
 
 use_ok('App::Dthumb');
 
@@ -17,7 +17,8 @@ my %conf = (
 	file_index => 't/out/index',
 	dir_images => 't/imgdir',
 );
-my @create_failed;
+my @created_files;
+my @indep_files = ('main.css');
 
 my $dthumb = App::Dthumb->new(%conf);
 isa_ok($dthumb, 'App::Dthumb');
@@ -52,26 +53,42 @@ unlink('t/out/index');
 $dthumb = App::Dthumb->new(dir_images => 't/out');
 $dthumb->create_files();
 
-ok(-d 't/out/.thumbs', '->create_files creates thumb dir');
-ok(-d 't/out/.dthumb', '->create_files creates data dir');
+ok(-d 't/out/.thumbs', 'create_files: Creates thumb dir');
+ok(-d 't/out/.dthumb', 'create_files: Creates data dir');
 
 for my $file ($dthumb->{data}->list_archived()) {
-	if (not -e "t/out/.dthumb/${file}") {
-		push(@create_failed, $file);
-	}
-	else {
+	if (-e "t/out/.dthumb/${file}") {
+		push(@created_files, $file);
 		unlink("t/out/.dthumb/${file}");
 	}
 }
 rmdir('t/out/.thumbs');
 rmdir('t/out/.dthumb');
 
-if (@create_failed) {
-	fail("->create_files missed out " . join(' ', @create_failed));
+is_deeply([sort $dthumb->{data}->list_archived()], [sort @created_files],
+	'create_files: All files created');
+@created_files = ();
+
+
+
+$dthumb = App::Dthumb->new(dir_images => 't/out', lightbox => 0);
+$dthumb->create_files();
+
+ok(-d 't/out/.thumbs', 'create_files: Creates thumb dir (lightbox=0)');
+ok(-d 't/out/.dthumb', 'create_files: Creates data dir (lightbox=0)');
+
+for my $file (@indep_files) {
+	if (-e "t/out/.dthumb/${file}") {
+		push(@created_files, $file);
+		unlink("t/out/.dthumb/${file}");
+	}
 }
-else {
-	pass("->create_files all okay");
-}
+rmdir('t/out/.thumbs');
+rmdir('t/out/.dthumb');
+
+is_deeply([sort @indep_files], [sort @created_files],
+	'create_files: All lightbox-independent files created');
+@created_files = ();
 
 
 
