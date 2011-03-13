@@ -6,6 +6,7 @@ use Module::Build;
 
 my $build = Module::Build->new(
 	build_requires => {
+		'File::Slurp' => 0,
 		'Test::More' => 0,
 		'Test::Compile' => 0,
 		'Test::Pod' => 0,

@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 use autodie;
 
-use Test::More tests => 18;
+use Test::More tests => 17;
 
 use_ok('App::Dthumb');
 
@@ -33,15 +33,11 @@ is($dthumb->{config}->{lightbox}, 0, 'Lightbox disabled');
 $dthumb = App::Dthumb->new('no-names' => 1);
 is($dthumb->{config}->{names}, 0, 'Image names disabled');
 
+is($dthumb->version(), $App::Dthumb::VERSION, '$dthumb->version()');
+
 $dthumb = App::Dthumb->new();
 
 @{$dthumb->{files}} = qw(a.png b.png c.png d.jpg);
 @{$dthumb->{old_thumbnails}} = 'e.png';
 
 is_deeply($dthumb->{files}, [$dthumb->get_files()], '$dthumb->get_files()');
-
-$dthumb = App::Dthumb->new(dir_images => 't/imgdir');
-$dthumb->read_directories();
-
-is_deeply($dthumb->{old_thumbnails}, ['invalid.png'], '{old_thumbnails}');
-is_deeply($dthumb->{files}, ['one.png', 'two.png'], '{files}');

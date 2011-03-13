@@ -348,6 +348,14 @@ sub write_out_html {
 	close($fh);
 }
 
+
+=head2 version
+
+Return B<App::Dthumb> version string.
+
+=cut
+
+
 sub version {
 	return $VERSION;
 }
