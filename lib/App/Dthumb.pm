@@ -204,22 +204,26 @@ sub create_files {
 	my ($self) = @_;
 	my $thumbdir = $self->{config}->{dir_thumbs};
 	my $datadir  = $self->{config}->{dir_data};
+	my @files;
 
 	if (not -d $thumbdir) {
 		mkdir($thumbdir);
 	}
+	if (not -d $datadir) {
+		mkdir($datadir);
+	}
 
 	if ($self->{config}->{lightbox}) {
+		@files = $self->{data}->list_archived();
+	}
+	else {
+		@files = ('main.css');
+	}
 
-		if (not -d $datadir) {
-			mkdir($datadir);
-		}
-
-		for my $file ($self->{data}->list_archived()) {
-			open(my $fh, '>', "${datadir}/${file}");
-			print {$fh} $self->{data}->get($file);
-			close($fh);
-		}
+	for my $file (@files) {
+		open(my $fh, '>', "${datadir}/${file}");
+		print {$fh} $self->{data}->get($file);
+		close($fh);
 	}
 }
 
