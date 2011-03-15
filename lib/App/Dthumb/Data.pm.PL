@@ -103,7 +103,10 @@ B<get> function, dthumb will replace occurences of "<!-- $key -->" or "/* $key
 
 sub set_vars {
 	my ($self, %vars) = @_;
-	$self->{replace} = \%vars;
+
+	while (my ($key, $value) = each(%vars)) {
+		$self->{replace}->{$key} = $value;
+	}
 }
 
 

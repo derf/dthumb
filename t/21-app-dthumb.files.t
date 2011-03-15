@@ -9,7 +9,7 @@ use Test::More;
 eval "use File::Slurp";
 plan skip_all => 'File::Slurp required' if $@;
 
-plan tests => 12;
+plan tests => 14;
 
 use_ok('App::Dthumb');
 
@@ -45,6 +45,37 @@ $dthumb->write_out_html();
 
 is(read_file('t/out/index'), read_file('t/cmp/index.no-names'),
 	'create_thumbnail_html / write_out_html with names = 0');
+
+unlink('t/out/index');
+
+
+
+$conf{names} = 1;
+$conf{lightbox} = 1;
+$dthumb = App::Dthumb->new(%conf);
+
+for my $file (qw(one.png two.png)) {
+	$dthumb->create_thumbnail_html($file);
+}
+$dthumb->write_out_html();
+
+is(read_file('t/out/index'), read_file('t/cmp/index.lightbox'),
+	'create_Thumbnail_html / write_out_html with lightbox = 1');
+
+unlink('t/out/index');
+
+
+
+$conf{lightbox} = 0;
+$dthumb = App::Dthumb->new(%conf);
+
+for my $file (qw(one.png two.png)) {
+	$dthumb->create_thumbnail_html($file);
+}
+$dthumb->write_out_html();
+
+is(read_file('t/out/index'), read_file('t/cmp/index.no-lightbox'),
+	'create_Thumbnail_html / write_out_html with lightbox = 0');
 
 unlink('t/out/index');
 

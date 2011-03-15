@@ -146,6 +146,12 @@ sub new {
 		height => $conf{size} * $conf{spacing} . 'px',
 	);
 
+	if ($conf{lightbox}) {
+		$ref->{data}->set_vars(
+			lightbox => $ref->{data}->get('html_lightbox.dthumb'),
+		);
+	}
+
 	$ref->{html} = $ref->{data}->get('html_start.dthumb');
 
 	return bless($ref, $obj);

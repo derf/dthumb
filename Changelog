@@ -1,3 +1,8 @@
+git HEAD
+
+    * Do not put lightbox links into HTML when lightbox is disabled
+      ( -> no more 404s for dthumb --no-lightbox)
+
 dthumb 0.2 - Fri Mar 04 2011
 
     * Add progressbar, introduces new dependency Time::Progress
