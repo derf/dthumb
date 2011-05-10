@@ -2,4 +2,5 @@
 /build/
 /_build/
 /blib/
+/MYMETA.yml
 /lib/App/Dthumb/Data.pm
