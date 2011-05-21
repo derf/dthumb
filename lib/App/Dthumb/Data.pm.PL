@@ -13,7 +13,7 @@ opendir(my $share_dh, 'share');
 print {$out_fh} <DATA>;
 
 for my $file (readdir($share_dh)) {
-	if (substr($file, 0, 1) eq '.') {
+	if (substr($file, 0, 1) eq q{.}) {
 		next;
 	}
 
@@ -21,7 +21,7 @@ for my $file (readdir($share_dh)) {
 	my $content = do { local $/ = undef; <$fh> };
 	close($fh);
 
-	if ($file =~ qr{ \. (png | gif) $ }ox) {
+	if ($file =~ qr{ [.] (png | gif) $ }ox) {
 		$content = encode_base64($content);
 	}
 
@@ -67,12 +67,10 @@ This manual documents B<App::Dthumb::Data> version 0.2
 
 use strict;
 use warnings;
-use base 'Exporter';
 
 use Data::Section -setup;
 use MIME::Base64 qw(decode_base64);
 
-our @EXPORT_OK = ();
 our $VERSION = '0.2';
 
 

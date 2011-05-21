@@ -15,8 +15,11 @@ use Time::Progress;
 STDERR->autoflush(1);
 
 my $opt = {};
-my $id = 1;
+my $id  = 1;
 
+our $VERSION = '0.2';
+
+#<<<
 GetOptions(
 	$opt,
 	qw{
@@ -31,19 +34,18 @@ GetOptions(
 		version|v
 	},
 ) or die("Please see perldoc -F $0\n");
-
-my $dthumb = App::Dthumb->new(%{$opt});
+#>>>
+my $dthumb = App::Dthumb->new( %{$opt} );
 my $timer  = Time::Progress->new();
 
-if ($opt->{version}) {
-	say "dthumb version " . $dthumb->version();
+if ( $opt->{version} ) {
+	say "dthumb version $VERSION";
 	exit 0;
 }
-if ($opt->{help}) {
-	exec('perldoc', '-F', $0);
+if ( $opt->{help} ) {
+	exec( 'perldoc', '-F', $0 );
 	die("Please see 'perldoc -F $0' or 'man dthumb'\n");
 }
-
 
 $dthumb->read_directories();
 $dthumb->create_files();
@@ -54,10 +56,9 @@ $timer->attr(
 	max => scalar $dthumb->get_files(),
 );
 
-for my $file ($dthumb->get_files()) {
+for my $file ( $dthumb->get_files() ) {
 	print STDERR $timer->report(
-		"\r\e[KCreating Thumbnails: %p done, %L elapsed, %E remaining",
-		$id++,
+		"\r\e[KCreating Thumbnails: %p done, %L elapsed, %E remaining", $id++,
 	);
 
 	$dthumb->create_thumbnail_html($file);

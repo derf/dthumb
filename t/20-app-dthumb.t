@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 use autodie;
 
-use Test::More tests => 17;
+use Test::More tests => 16;
 
 use_ok('App::Dthumb');
 
@@ -32,8 +32,6 @@ is($dthumb->{config}->{lightbox}, 0, 'Lightbox disabled');
 
 $dthumb = App::Dthumb->new('no-names' => 1);
 is($dthumb->{config}->{names}, 0, 'Image names disabled');
-
-is($dthumb->version(), $App::Dthumb::VERSION, '$dthumb->version()');
 
 $dthumb = App::Dthumb->new();
 
