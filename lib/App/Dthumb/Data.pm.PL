@@ -48,7 +48,9 @@ our $VERSION = '0.2';
 
 sub new {
 	my ($obj) = @_;
+
 	my $ref = {};
+
 	return bless($ref, $obj);
 }
 
@@ -58,11 +60,14 @@ sub set_vars {
 	while (my ($key, $value) = each(%vars)) {
 		$self->{replace}->{$key} = $value;
 	}
+
+	return;
 }
 
 sub list_archived {
 	my ($self) = @_;
-	return grep { ! /\.dthumb$/ } $self->section_data_names();
+
+	return grep { ! m{ [.] dthumb $ }x } $self->section_data_names();
 }
 
 sub get {
@@ -70,14 +75,14 @@ sub get {
 	my $data = $self->section_data($name);
 
 	if (not $data) {
-		return undef;
+		return;
 	}
 
 	$data = ${$data};
 
 	chomp($data);
 
-	if ($name =~ qr{ \. (png | gif) $ }ox) {
+	if ($name =~ m{ [.] (png | gif) $ }ox) {
 		return decode_base64($data);
 	}
 
@@ -91,6 +96,10 @@ sub get {
 
 	return $data;
 }
+
+# * Included files in __DATA__ may use other newlines than we do
+# * Since we have __DATA__ below the POD, we cannot put it after __END__
+## no critic (RequireConsistentNewlines, RequirePodAtEnd)
 
 1;
 
