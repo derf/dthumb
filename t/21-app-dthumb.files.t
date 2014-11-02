@@ -94,6 +94,8 @@ for my $file ($dthumb->{data}->list_archived()) {
 	}
 }
 rmdir('t/out/.thumbs');
+rmdir('t/out/.dthumb/lightbox');
+rmdir('t/out/.dthumb/shadowbox');
 rmdir('t/out/.dthumb');
 
 is_deeply([sort $dthumb->{data}->list_archived()], [sort @created_files],
@@ -115,6 +117,8 @@ for my $file (@indep_files) {
 	}
 }
 rmdir('t/out/.thumbs');
+rmdir('t/out/.dthumb/lightbox');
+rmdir('t/out/.dthumb/shadowbox');
 rmdir('t/out/.dthumb');
 
 is_deeply([sort @indep_files], [sort @created_files],

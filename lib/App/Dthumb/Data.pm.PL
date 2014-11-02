@@ -2,38 +2,45 @@
 use strict;
 use warnings;
 use 5.010;
-use autodie;
+use File::Slurp qw(read_dir);
 use MIME::Base64 qw(encode_base64);
 
 my ($out_file) = @ARGV;
 
-open(my $out_fh, '>', $out_file);
-opendir(my $share_dh, 'share');
+open( my $out_fh, '>', $out_file );
+opendir( my $share_dh,    'share' );
+opendir( my $share_lb_dh, 'share/lightbox' );
+opendir( my $share_sb_dh, 'share/shadowbox' );
 
 print {$out_fh} <DATA>;
 
-for my $file (readdir($share_dh)) {
-	if (substr($file, 0, 1) eq q{.}) {
+for my $file (
+	read_dir( 'share',           prefix => 1 ),
+	read_dir( 'share/lightbox',  prefix => 1 ),
+	read_dir( 'share/shadowbox', prefix => 1 )
+  )
+{
+
+	if ( -d $file ) {
 		next;
 	}
 
-	open(my $fh, '<', "share/${file}");
+	open( my $fh, '<', $file );
 	my $content = do { local $/ = undef; <$fh> };
 	close($fh);
 
-	if ($file =~ qr{ [.] (png | gif) $ }ox) {
+	if ( $file =~ qr{ [.] (png | gif) $ }ox ) {
 		$content = encode_base64($content);
 	}
 
-	printf {$out_fh} (
-		"______[ %s ]______\n%s\n",
-		$file,
-		$content,
-	);
+	$file =~ s{ ^ share/ }{}x;
+
+	printf {$out_fh} ( "______[ %s ]______\n%s\n", $file, $content, );
 }
 closedir($share_dh);
+closedir($share_lb_dh);
+closedir($share_sb_dh);
 close($out_fh);
-
 
 __DATA__
 package App::Dthumb::Data;
@@ -195,4 +202,3 @@ Copyright (C) 2011 by Daniel Friesel E<lt>derf@chaosdorf.deE<gt>
 =cut
 
 __DATA__
-

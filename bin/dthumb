@@ -28,6 +28,7 @@ GetOptions(
 		no-names|n
 		quality|q=i
 		recreate|r
+		shadowbox|S
 		size|d=i
 		spacing|s=f
 		title|t=s

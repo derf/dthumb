@@ -29,8 +29,13 @@ sub new {
 	$conf{dir_thumbs} = "$conf{dir_images}/.thumbs";
 
 	# helpers to directly pass GetOptions results
-	$conf{lightbox} //= ( $conf{'no-lightbox'} ? 0 : 1 );
-	$conf{names}    //= ( $conf{'no-names'}    ? 0 : 1 );
+	$conf{lightbox} //= (
+		(
+			     $conf{'no-lightbox'}
+			  or $conf{shadowbox}
+		) ? 0 : 1
+	);
+	$conf{names} //= ( $conf{'no-names'} ? 0 : 1 );
 
 	$ref->{config} = \%conf;
 
@@ -43,8 +48,12 @@ sub new {
 	);
 
 	if ( $conf{lightbox} ) {
-		$ref->{data}
-		  ->set_vars( lightbox => $ref->{data}->get('html_lightbox.dthumb'), );
+		$ref->{data}->set_vars(
+			lightbox => $ref->{data}->get('lightbox/html_load.dthumb'), );
+	}
+	elsif ( $conf{shadowbox} ) {
+		$ref->{data}->set_vars(
+			lightbox => $ref->{data}->get('shadowbox/html_load.dthumb'), );
 	}
 
 	$ref->{html} = $ref->{data}->get('html_start.dthumb');
@@ -94,14 +103,15 @@ sub create_files {
 	my $datadir  = $self->{config}->{dir_data};
 	my @files;
 
-	if ( not -d $thumbdir ) {
-		mkdir($thumbdir);
-	}
-	if ( not -d $datadir ) {
-		mkdir($datadir);
+	for my $dir ( $thumbdir, $datadir, "${datadir}/lightbox",
+		"${datadir}/shadowbox" )
+	{
+		if ( not -d $dir ) {
+			mkdir($dir);
+		}
 	}
 
-	if ( $self->{config}->{lightbox} ) {
+	if ( $self->{config}->{lightbox} or $self->{config}->{shadowbox} ) {
 		@files = $self->{data}->list_archived();
 	}
 	else {

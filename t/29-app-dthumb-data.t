@@ -5,11 +5,12 @@ use 5.010;
 use autodie;
 
 use App::Dthumb::Data;
+use File::Slurp qw(read_dir);
 use Test::More;
 
-opendir(my $share, 'share');
-my @files = grep { /^[^.]/ } readdir($share);
-closedir($share);
+my @files = grep { ! -d "share/$_" } read_dir('share');
+push(@files, map { "lightbox/$_" } read_dir('share/lightbox'));
+push(@files, map { "shadowbox/$_" } read_dir('share/shadowbox'));
 
 my @files_archived = sort grep { ! /\.dthumb$/ } @files;
 
