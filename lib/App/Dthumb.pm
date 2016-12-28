@@ -22,7 +22,7 @@ sub new {
 	$conf{spacing}  //= 1.1;
 	$conf{title}    //= ( split( qr{/}, cwd() ) )[-1];
 
-	$conf{file_index} //= 'index.xhtml';
+	$conf{file_index} //= 'index.html';
 	$conf{dir_images} //= q{.};
 
 	$conf{dir_data}   = "$conf{dir_images}/.dthumb";
@@ -46,15 +46,6 @@ sub new {
 		width  => $conf{size} * $conf{spacing} . 'px',
 		height => $conf{size} * $conf{spacing} . 'px',
 	);
-
-	if ( $conf{lightbox} ) {
-		$ref->{data}->set_vars(
-			lightbox => $ref->{data}->get('lightbox/html_load.dthumb'), );
-	}
-	elsif ( $conf{shadowbox} ) {
-		$ref->{data}->set_vars(
-			lightbox => $ref->{data}->get('shadowbox/html_load.dthumb'), );
-	}
 
 	$ref->{html} = $ref->{data}->get('html_start.dthumb');
 
@@ -101,21 +92,14 @@ sub create_files {
 
 	my $thumbdir = $self->{config}->{dir_thumbs};
 	my $datadir  = $self->{config}->{dir_data};
-	my @files;
+	my @files    = $self->{data}->list_archived;
 
-	for my $dir ( $thumbdir, $datadir, "${datadir}/lightbox",
-		"${datadir}/shadowbox" )
+	for my $dir ( $thumbdir, $datadir, "${datadir}/css",
+		"${datadir}/js" )
 	{
 		if ( not -d $dir ) {
 			mkdir($dir);
 		}
-	}
-
-	if ( $self->{config}->{lightbox} or $self->{config}->{shadowbox} ) {
-		@files = $self->{data}->list_archived();
-	}
-	else {
-		@files = ('main.css');
 	}
 
 	for my $file (@files) {
@@ -154,7 +138,7 @@ sub create_thumbnail_html {
 	$self->{html} .= "<div class=\"image-container\">\n";
 
 	$self->{html} .= sprintf(
-		"\t<a rel=\"lightbox\" href=\"%s\" title=\"%s\">\n"
+		"\t<a class=\"fancybox\" href=\"%s\" title=\"%s\" data-fancybox-group=\"gallery\">\n"
 		  . "\t\t<img src=\"%s/%s\" alt=\"%s\" /></a>\n",
 		($file) x 2,
 		$self->{config}->{dir_thumbs},
@@ -280,7 +264,7 @@ Default: F<.> (current working directory)
 
 Set name of the html index file
 
-Default: F<index.xhtml>
+Default: F<index.html>
 
 =item B<lightbox> => I<bool>
 
@@ -355,7 +339,7 @@ the original file.
 
 =item $dthumb->write_out_html()
 
-Write the cached HTML data to F<index.xhtml>.
+Write the cached HTML data to F<index.html>.
 
 =back
 

@@ -1,21 +1,27 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html>
 <head>
 	<title>dthumb</title>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-	<link rel="stylesheet" type="text/css" href=".dthumb/main.css"/>
-<link rel="stylesheet" type="text/css" href=".dthumb/lightbox/lightbox.css"/>
-<script type="text/javascript" src=".dthumb/lightbox/lightbox.js"></script>
-
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src=".dthumb/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src=".dthumb/js/jquery.mousewheel-3.0.6.pack.js"></script>
+	<script type="text/javascript" src=".dthumb/js/jquery.fancybox.pack.js"></script>
+	<link rel="stylesheet" type="text/css" href=".dthumb/css/jquery.fancybox.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href=".dthumb/css/main.css"/>
+	<script type="text/javascript">//<![CDATA[
+		$(document).ready(function() {
+			$('.fancybox').fancybox();
+		});
+	//]]</script>
 </head>
 <body><div>
 <div class="image-container">
-	<a rel="lightbox" href="one.png" title="one.png">
+	<a class="fancybox" href="one.png" title="one.png" data-fancybox-group="gallery">
 		<img src="t/imgdir/.thumbs/one.png" alt="one.png" /></a>
 </div>
 <div class="image-container">
-	<a rel="lightbox" href="two.png" title="two.png">
+	<a class="fancybox" href="two.png" title="two.png" data-fancybox-group="gallery">
 		<img src="t/imgdir/.thumbs/two.png" alt="two.png" /></a>
 </div>
 </div>

@@ -18,7 +18,7 @@ is($dthumb->{config}->{dir_data}, './.dthumb', 'Data directory is .dthumb');
 is($dthumb->{config}->{dir_images}, '.', 'Image directory is .');
 is($dthumb->{config}->{dir_thumbs}, './.thumbs',
 	'Thumbnail directory is dthumbs');
-is($dthumb->{config}->{file_index}, 'index.xhtml', 'index is index.xhtml');
+is($dthumb->{config}->{file_index}, 'index.html', 'index is index.html');
 
 is($dthumb->{config}->{lightbox},   1, 'Lightbox enabled');
 is($dthumb->{config}->{names}   ,   1, 'Show image names');

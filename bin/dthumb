@@ -24,7 +24,6 @@ GetOptions(
 	$opt,
 	qw{
 		help|h
-		no-lightbox|L
 		no-names|n
 		quality|q=i
 		recreate|r
@@ -102,12 +101,6 @@ During operation, B<dthumb> will show its progress on STDERR.
 
 =over
 
-=item B<-L>, B<--no-lightbox>
-
-Disable Javascript lightbox.  Note that in the current implementations, this
-simple skips installation of the data files.  The lightbox link in the HTML
-will still be written, leading to 404s on the server.  This will be fixed.
-
 =item B<-n>, B<--no-names>
 
 Do not show image names below thumbnails
@@ -179,11 +172,17 @@ E<lt>http://github.com/derf/dthumb/issuesE<gt>.
 
 =head1 AUTHOR
 
-Copyright (C) 2009-2011 by Daniel Friesel E<lt>derf@chaosdorf.deE<gt>.
+Copyright (C) 2009-2016 by Daniel Friesel E<lt>derf@chaosdorf.deE<gt>.
 
-The lightbox code is (C) by Lokesh Dhakar
-<http://www.huddletogether.com/projects/lightbox/>.
+The lightbox code is (C) by JE<0x0101>nis Skarnelis under the license
+CC-BY-NC 3.0. See L<http://fancyapps.com/fancybox/>.
 
 =head1 LICENSE
 
+For this program:
+
     0. You just DO WHAT THE FUCK YOU WANT TO
+
+For the fancybox code (part of the generated HTML):
+
+    CC-BY-NC 3.0

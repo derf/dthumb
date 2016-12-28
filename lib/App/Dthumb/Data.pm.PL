@@ -8,16 +8,13 @@ use MIME::Base64 qw(encode_base64);
 my ($out_file) = @ARGV;
 
 open( my $out_fh, '>', $out_file );
-opendir( my $share_dh,    'share' );
-opendir( my $share_lb_dh, 'share/lightbox' );
-opendir( my $share_sb_dh, 'share/shadowbox' );
 
 print {$out_fh} <DATA>;
 
 for my $file (
-	read_dir( 'share',           prefix => 1 ),
-	read_dir( 'share/lightbox',  prefix => 1 ),
-	read_dir( 'share/shadowbox', prefix => 1 )
+	read_dir( 'share',     prefix => 1 ),
+	read_dir( 'share/css', prefix => 1 ),
+	read_dir( 'share/js',  prefix => 1 )
   )
 {
 
@@ -37,9 +34,6 @@ for my $file (
 
 	printf {$out_fh} ( "______[ %s ]______\n%s\n", $file, $content, );
 }
-closedir($share_dh);
-closedir($share_lb_dh);
-closedir($share_sb_dh);
 close($out_fh);
 
 __DATA__

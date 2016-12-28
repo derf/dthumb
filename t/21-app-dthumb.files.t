@@ -9,7 +9,7 @@ use Test::More;
 eval "use File::Slurp";
 plan skip_all => 'File::Slurp required' if $@;
 
-plan tests => 14;
+plan tests => 9;
 
 use_ok('App::Dthumb');
 
@@ -50,37 +50,6 @@ unlink('t/out/index');
 
 
 
-$conf{names} = 1;
-$conf{lightbox} = 1;
-$dthumb = App::Dthumb->new(%conf);
-
-for my $file (qw(one.png two.png)) {
-	$dthumb->create_thumbnail_html($file);
-}
-$dthumb->write_out_html();
-
-is(read_file('t/out/index'), read_file('t/cmp/index.lightbox'),
-	'create_Thumbnail_html / write_out_html with lightbox = 1');
-
-unlink('t/out/index');
-
-
-
-$conf{lightbox} = 0;
-$dthumb = App::Dthumb->new(%conf);
-
-for my $file (qw(one.png two.png)) {
-	$dthumb->create_thumbnail_html($file);
-}
-$dthumb->write_out_html();
-
-is(read_file('t/out/index'), read_file('t/cmp/index.no-lightbox'),
-	'create_Thumbnail_html / write_out_html with lightbox = 0');
-
-unlink('t/out/index');
-
-
-
 $dthumb = App::Dthumb->new(dir_images => 't/out');
 $dthumb->create_files();
 
@@ -94,38 +63,13 @@ for my $file ($dthumb->{data}->list_archived()) {
 	}
 }
 rmdir('t/out/.thumbs');
-rmdir('t/out/.dthumb/lightbox');
-rmdir('t/out/.dthumb/shadowbox');
+rmdir('t/out/.dthumb/css');
+rmdir('t/out/.dthumb/js');
 rmdir('t/out/.dthumb');
 
 is_deeply([sort $dthumb->{data}->list_archived()], [sort @created_files],
 	'create_files: All files created');
 @created_files = ();
-
-
-
-$dthumb = App::Dthumb->new(dir_images => 't/out', lightbox => 0);
-$dthumb->create_files();
-
-ok(-d 't/out/.thumbs', 'create_files: Creates thumb dir (lightbox=0)');
-ok(-d 't/out/.dthumb', 'create_files: Creates data dir (lightbox=0)');
-
-for my $file (@indep_files) {
-	if (-e "t/out/.dthumb/${file}") {
-		push(@created_files, $file);
-		unlink("t/out/.dthumb/${file}");
-	}
-}
-rmdir('t/out/.thumbs');
-rmdir('t/out/.dthumb/lightbox');
-rmdir('t/out/.dthumb/shadowbox');
-rmdir('t/out/.dthumb');
-
-is_deeply([sort @indep_files], [sort @created_files],
-	'create_files: All lightbox-independent files created');
-@created_files = ();
-
-
 
 $dthumb = App::Dthumb->new(%conf);
 

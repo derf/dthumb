@@ -9,8 +9,8 @@ use File::Slurp qw(read_dir);
 use Test::More;
 
 my @files = grep { ! -d "share/$_" } read_dir('share');
-push(@files, map { "lightbox/$_" } read_dir('share/lightbox'));
-push(@files, map { "shadowbox/$_" } read_dir('share/shadowbox'));
+push(@files, map { "css/$_" } read_dir('share/css'));
+push(@files, map { "js/$_" } read_dir('share/js'));
 
 my @files_archived = sort grep { ! /\.dthumb$/ } @files;
 
