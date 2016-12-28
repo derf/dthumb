@@ -223,7 +223,6 @@ App::Dthumb - Generate thumbnail index for a set of images
     		help|h
     		size|d=i
     		spacing|s=f
-    		no-lightbox|L
     		no-names|n
     		quality|q=i
     		version|v
@@ -231,7 +230,7 @@ App::Dthumb - Generate thumbnail index for a set of images
     );
     
     my $dthumb = App::Dthumb->new($opt);
-    $dthumb->run();
+    $dthumb->run;
 
 =head1 VERSION
 
@@ -239,7 +238,7 @@ This manual documents App::Dthumb version 0.2
 
 =head1 DESCRIPTION
 
-App::Dthumb does all the backend work for dthumb(1).
+App::Dthumb does the backend work for dthumb(1).
 
 =head1 METHODS
 
@@ -265,12 +264,6 @@ Default: F<.> (current working directory)
 Set name of the html index file
 
 Default: F<index.html>
-
-=item B<lightbox> => I<bool>
-
-Include and use javascript lightbox code
-
-Default: true
 
 =item B<recreate> => I<bool>
 
@@ -306,24 +299,24 @@ Default: 75
 
 =back
 
-=item $dthumb->read_directories()
+=item $dthumb->read_directories
 
 Read in a list of all image files in the current directory and all files in
 F<.thumbs> which do not have a corresponding full-size image.
 
-=item $dthumb->create_files()
+=item $dthumb->create_files
 
 Makes sure the F<.thumbs> directory exists.
 
 Also, if lightbox is enabled (which is the default), creates the F<.dthumb>
 directory and fills it with all required files.
 
-=item $dthumb->delete_old_thumbnails()
+=item $dthumb->delete_old_thumbnails
 
 Unlink all no longer required thumbnails (as previously found by
 B<read_directories>).
 
-=item $dthumb->get_files()
+=item $dthumb->get_files
 
 Returns an array of all image files found by B<read_directories>.
 
@@ -337,7 +330,7 @@ Load F<$file> and save a resized version in F<.thumbs/$file>.  Skips thumbnail
 generation if the thumbnail already exists and has a more recent mtime than
 the original file.
 
-=item $dthumb->write_out_html()
+=item $dthumb->write_out_html
 
 Write the cached HTML data to F<index.html>.
 
@@ -359,12 +352,11 @@ None yet.
 
 =head1 BUGS AND LIMITATIONS
 
-So far, this module is pretty focused on working with dthumb(1).  It is
-planned to make it somewhat more universal.
+To be determined.
 
 =head1 AUTHOR
 
-Copyright (C) 2009-2011 by Daniel Friesel E<lt>derf@chaosdorf.deE<gt>
+Copyright (C) 2009-2016 by Daniel Friesel E<lt>derf@chaosdorf.deE<gt>
 
 =head1 LICENSE
 

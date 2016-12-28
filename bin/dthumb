@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# Copyright © 2009-2011 by Daniel Friesel <derf@chaosdorf.de>
+# Copyright © 2009-2016 by Daniel Friesel <derf@chaosdorf.de>
 # License: WTFPL:
 #     You just DO WHAT THE FUCK YOU WANT TO
 use strict;
@@ -27,7 +27,6 @@ GetOptions(
 		no-names|n
 		quality|q=i
 		recreate|r
-		shadowbox|S
 		size|d=i
 		spacing|s=f
 		title|t=s
@@ -72,26 +71,23 @@ __END__
 
 =head1 NAME
 
-dthumb - Generate Thumbnails + Index for a set of images
+dthumb - Generate file index with thumbnails for a directory.
 
 =head1 SYNOPSIS
 
-B<dthumb> [I<options>]
+B<dthumb> [B<-nr>] [B<-d> I<size>] [B<-s> I<spacing>] [B<-t> I<title>]
+[B<-q> I<quality>]
 
 =head1 VERSION
 
-This manual documents B<dthumb> version 0.2
+version 0.2
 
 =head1 DESCRIPTION
 
-B<dthumb> will create an F<index.xhtml> with a list (thumbnails) of
-all images found in the current directory; the thumbnails will link to the
-images.
-
-It uses a javascript lightbox (see
-E<lt>http://www.huddletogether.com/projects/lightbox/E<gt>) to display the
-images.  To view them without the lightbox, either disable it using the B<-L>
-option or open images by clicking on the filename instead of the thumbnail.
+B<dthumb> creates an HTML index with thumbnails for all images found in the
+current directory.  It uses a javascript lightbox (see
+L<http://fancyapps.com/fancybox/>) to display images.  To view them without the
+lightbox, open images by clicking on the filename instead of the thumbnail.
 
 Note that recursion is not yet supported.
 
@@ -109,29 +105,27 @@ Do not show image names below thumbnails
 
 Recreate all thumbnails
 
-=item B<-d>, B<--size> I<pixels>
+=item B<-d>, B<--size> I<maxsize> (default: 200)
 
-Maximum thumbnail size (either width or height).  Defaults to 200
+Set maximum thumbnail size. Thumbnails are created so that neither width nor
+height exceed I<maxsize> pixels.
 
-=item B<-s>, B<--spacing> I<float>
+=item B<-s>, B<--spacing> I<float> (default: 1.1)
 
 Use I<float> as spacing factor.
-The size of each image element (image + possible border around it) is the
+The size of each image element (image + border around it) is the
 number of pixels (see --size) times I<float>.
 So for B<1.1> you have a small border around each image, for B<1.0> you have
 no border at all, etc.
-
-Defaults to 1.1
 
 =item B<-t>, B<--title> I<string>
 
 Set HTML document title. Defaults to the basename of the current directory
 
-=item B<-q>, B<--quality> I<int>
+=item B<-q>, B<--quality> I<int> (default: 75)
 
 Set thumbnail quality.
 Accepts values between 0 and 100, where 100 is the highest possible quality.
-Default is 75
 
 =back
 
@@ -146,10 +140,10 @@ None.
 =head1 FILES
 
 B<dthumb> always works in the current working directory.  It will create the
-file F<index.xhtml>, in which the HTML code for the thumbnail list is saved.
+file F<index.html>, in which the HTML code for the thumbnail list is saved.
 
 It also creates two directories: F<.thumbs> for the thumbnail images, and
-F<.dthumb>, which contains various data (so far icons and javascript code).
+F<.dthumb> for CSS and lightbox code.
 
 =head1 DEPENDENCIES
 
@@ -183,6 +177,6 @@ For this program:
 
     0. You just DO WHAT THE FUCK YOU WANT TO
 
-For the fancybox code (part of the generated HTML):
+For the lightbox code (part of the generated HTML):
 
     CC-BY-NC 3.0
