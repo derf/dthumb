@@ -2,12 +2,13 @@
 use strict;
 use warnings;
 use 5.010;
-use File::Slurp qw(read_dir);
+use Carp qw(carp croak);
+use File::Slurp qw(read_dir read_file);
 use MIME::Base64 qw(encode_base64);
 
 my ($out_file) = @ARGV;
 
-open( my $out_fh, '>', $out_file );
+open( my $out_fh, '>', $out_file ) or croak("Cannot open ${out_file}: $!");
 
 print {$out_fh} <DATA>;
 
@@ -22,9 +23,7 @@ for my $file (
 		next;
 	}
 
-	open( my $fh, '<', $file );
-	my $content = do { local $/ = undef; <$fh> };
-	close($fh);
+	my $content = read_file($file);
 
 	if ( $file =~ qr{ [.] (png | gif) $ }ox ) {
 		$content = encode_base64($content);
@@ -34,7 +33,7 @@ for my $file (
 
 	printf {$out_fh} ( "______[ %s ]______\n%s\n", $file, $content, );
 }
-close($out_fh);
+close($out_fh) or carp("Cannot close ${out_file}: $!");
 
 __DATA__
 package App::Dthumb::Data;

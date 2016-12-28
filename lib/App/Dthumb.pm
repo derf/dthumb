@@ -2,11 +2,11 @@ package App::Dthumb;
 
 use strict;
 use warnings;
-use autodie;
 use 5.010;
 
 use App::Dthumb::Data;
 use Cwd;
+use File::Slurp qw(read_dir write_file);
 use Image::Imlib2;
 
 our $VERSION = '0.2';
@@ -28,13 +28,6 @@ sub new {
 	$conf{dir_data}   = "$conf{dir_images}/.dthumb";
 	$conf{dir_thumbs} = "$conf{dir_images}/.thumbs";
 
-	# helpers to directly pass GetOptions results
-	$conf{lightbox} //= (
-		(
-			     $conf{'no-lightbox'}
-			  or $conf{shadowbox}
-		) ? 0 : 1
-	);
 	$conf{names} //= ( $conf{'no-names'} ? 0 : 1 );
 
 	$ref->{config} = \%conf;
@@ -57,28 +50,22 @@ sub read_directories {
 
 	my $thumbdir = $self->{config}->{dir_thumbs};
 	my $imgdir   = $self->{config}->{dir_images};
-	my $dh;
 	my ( @files, @old_thumbs );
 
-	opendir( $dh, $imgdir );
-
-	for my $file ( readdir($dh) ) {
+	for my $file ( read_dir($imgdir) ) {
 		if ( -f "${imgdir}/${file}"
 			and $file =~ qr{ [.] (png | jp e? g) $ }iox )
 		{
 			push( @files, $file );
 		}
 	}
-	closedir($dh);
 
 	if ( -d $thumbdir ) {
-		opendir( $dh, $thumbdir );
-		for my $file ( readdir($dh) ) {
+		for my $file ( read_dir($thumbdir) ) {
 			if ( $file =~ qr{^ [^.] }ox and not -f "${imgdir}/${file}" ) {
 				push( @old_thumbs, $file );
 			}
 		}
-		closedir($dh);
 	}
 
 	@{ $self->{files} } = sort { lc($a) cmp lc($b) } @files;
@@ -94,18 +81,14 @@ sub create_files {
 	my $datadir  = $self->{config}->{dir_data};
 	my @files    = $self->{data}->list_archived;
 
-	for my $dir ( $thumbdir, $datadir, "${datadir}/css",
-		"${datadir}/js" )
-	{
+	for my $dir ( $thumbdir, $datadir, "${datadir}/css", "${datadir}/js" ) {
 		if ( not -d $dir ) {
 			mkdir($dir);
 		}
 	}
 
 	for my $file (@files) {
-		open( my $fh, '>', "${datadir}/${file}" );
-		print {$fh} $self->{data}->get($file);
-		close($fh);
+		write_file( "${datadir}/${file}", $self->{data}->get($file) );
 	}
 
 	return;
@@ -138,7 +121,7 @@ sub create_thumbnail_html {
 	$self->{html} .= "<div class=\"image-container\">\n";
 
 	$self->{html} .= sprintf(
-		"\t<a class=\"fancybox\" href=\"%s\" title=\"%s\" data-fancybox-group=\"gallery\">\n"
+"\t<a class=\"fancybox\" href=\"%s\" title=\"%s\" data-fancybox-group=\"gallery\">\n"
 		  . "\t\t<img src=\"%s/%s\" alt=\"%s\" /></a>\n",
 		($file) x 2,
 		$self->{config}->{dir_thumbs},
@@ -195,9 +178,7 @@ sub write_out_html {
 
 	$self->{html} .= $self->{data}->get('html_end.dthumb');
 
-	open( my $fh, '>', $self->{config}->{file_index} );
-	print {$fh} $self->{html};
-	close($fh);
+	write_file( $self->{config}->{file_index}, $self->{html} );
 
 	return;
 }
