@@ -56,8 +56,12 @@ sub read_directories {
 		if ( $file =~ m{ ^ [.] }x ) {
 			next;
 		}
+		if ( $file eq 'index.html' ) {
+			next;
+		}
 		if ( -f "${imgdir}/${file}"
-			and $file =~ qr{ [.] (png | jp e? g) $ }iox )
+			and
+			( $self->{config}{all} or $file =~ m{ [.] (png | jp e? g) $ }ix ) )
 		{
 			push( @files, $file );
 		}
@@ -68,7 +72,7 @@ sub read_directories {
 
 	if ( -d $thumbdir ) {
 		for my $file ( read_dir($thumbdir) ) {
-			if ( $file =~ qr{^ [^.] }ox and not -f "${imgdir}/${file}" ) {
+			if ( $file =~ m{^ [^.] }ox and not -f "${imgdir}/${file}" ) {
 				push( @old_thumbs, $file );
 			}
 		}
@@ -127,19 +131,26 @@ sub create_thumbnail_html {
 	$self->{html} .= "<div class=\"image-container\">\n";
 
 	if ( -d $file ) {
-		$self->{html}
-		  .= sprintf(
-"\t<a class=\"fancybox\" href=\"%s\" title=\"%s\" data-fancybox-group=\"gallery\">\n"
+		$self->{html} .= sprintf(
+			"\t<a href=\"%s\" title=\"%s\">\n"
 			  . "\t\t<img src=\".dthumb/folder-blue.png\" alt=\"%s\" /></a>\n",
-			($file) x 2, $file, );
+			($file) x 3,
+		);
 	}
-	else {
+	elsif ( $file =~ m{ [.] (png | jp e? g) $ }ix ) {
 		$self->{html} .= sprintf(
 "\t<a class=\"fancybox\" href=\"%s\" title=\"%s\" data-fancybox-group=\"gallery\">\n"
 			  . "\t\t<img src=\"%s/%s\" alt=\"%s\" /></a>\n",
 			($file) x 2,
 			$self->{config}->{dir_thumbs},
 			($file) x 2,
+		);
+	}
+	else {
+		$self->{html} .= sprintf(
+			"\t<a href=\"%s\" title=\"%s\">\n"
+			  . "\t\t<img src=\".dthumb/unknown.png\" alt=\"%s\" /></a>\n",
+			($file) x 3,
 		);
 	}
 
@@ -168,7 +179,10 @@ sub create_thumbnail_image {
 	{
 		return;
 	}
-	if ( -d $file ) {
+	if ( -d $file
+		or $self->{config}{all}
+		and not( $file =~ m{ [.] (png | jp e? g) $ }ix ) )
+	{
 		return;
 	}
 

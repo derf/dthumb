@@ -23,6 +23,7 @@ our $VERSION = '0.2';
 GetOptions(
 	$opt,
 	qw{
+		all|a
 		help|h
 		no-names|n
 		quality|q=i
