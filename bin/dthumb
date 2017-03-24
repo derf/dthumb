@@ -27,6 +27,7 @@ GetOptions(
 		no-names|n
 		quality|q=i
 		recreate|r
+		recursive|R
 		size|d=i
 		spacing|s=f
 		title|t=s
@@ -46,16 +47,16 @@ if ( $opt->{help} ) {
 	die("Please see 'perldoc -F $0' or 'man dthumb'\n");
 }
 
-$dthumb->read_directories();
-$dthumb->create_files();
-$dthumb->delete_old_thumbnails();
+$dthumb->read_directories;
+$dthumb->create_files;
+$dthumb->delete_old_thumbnails;
 
 $timer->attr(
 	min => 1,
-	max => scalar $dthumb->get_files(),
+	max => scalar $dthumb->get_files,
 );
 
-for my $file ( $dthumb->get_files() ) {
+for my $file ( $dthumb->get_files ) {
 	print STDERR $timer->report(
 		"\r\e[KCreating Thumbnails: %p done, %L elapsed, %E remaining", $id++,
 	);
@@ -65,7 +66,7 @@ for my $file ( $dthumb->get_files() ) {
 }
 print "\n";
 
-$dthumb->write_out_html();
+$dthumb->write_out_html;
 
 __END__
 

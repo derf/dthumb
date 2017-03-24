@@ -53,9 +53,15 @@ sub read_directories {
 	my ( @files, @old_thumbs );
 
 	for my $file ( read_dir($imgdir) ) {
+		if ( $file =~ m{ ^ [.] }x ) {
+			next;
+		}
 		if ( -f "${imgdir}/${file}"
 			and $file =~ qr{ [.] (png | jp e? g) $ }iox )
 		{
+			push( @files, $file );
+		}
+		elsif ( $self->{config}{recursive} and -d "${imgdir}/${file}" ) {
 			push( @files, $file );
 		}
 	}
@@ -120,15 +126,24 @@ sub create_thumbnail_html {
 
 	$self->{html} .= "<div class=\"image-container\">\n";
 
-	$self->{html} .= sprintf(
+	if ( -d $file ) {
+		$self->{html}
+		  .= sprintf(
 "\t<a class=\"fancybox\" href=\"%s\" title=\"%s\" data-fancybox-group=\"gallery\">\n"
-		  . "\t\t<img src=\"%s/%s\" alt=\"%s\" /></a>\n",
-		($file) x 2,
-		$self->{config}->{dir_thumbs},
-		($file) x 2,
-	);
+			  . "\t\t<img src=\".dthumb/folder-blue.png\" alt=\"%s\" /></a>\n",
+			($file) x 2, $file, );
+	}
+	else {
+		$self->{html} .= sprintf(
+"\t<a class=\"fancybox\" href=\"%s\" title=\"%s\" data-fancybox-group=\"gallery\">\n"
+			  . "\t\t<img src=\"%s/%s\" alt=\"%s\" /></a>\n",
+			($file) x 2,
+			$self->{config}->{dir_thumbs},
+			($file) x 2,
+		);
+	}
 
-	if ( $self->{config}->{names} ) {
+	if ( $self->{config}->{names} or -d $file ) {
 		$self->{html} .= sprintf(
 			"\t<br />\n" . "\t<a style=\"%s;\" href=\"%s\">%s</a>\n",
 			'text-decoration: none',
@@ -153,9 +168,12 @@ sub create_thumbnail_image {
 	{
 		return;
 	}
+	if ( -d $file ) {
+		return;
+	}
 
 	my $image = Image::Imlib2->load($file);
-	my ( $dx, $dy ) = ( $image->width(), $image->height() );
+	my ( $dx, $dy ) = ( $image->width, $image->height );
 	my $thumb = $image;
 
 	if ( $dx > $thumb_dim or $dy > $thumb_dim ) {
