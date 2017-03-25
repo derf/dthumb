@@ -77,7 +77,7 @@ dthumb - Generate file index with thumbnails for a directory.
 
 =head1 SYNOPSIS
 
-B<dthumb> [B<-nr>] [B<-d> I<size>] [B<-s> I<spacing>] [B<-t> I<title>]
+B<dthumb> [B<-anrR>] [B<-d> I<size>] [B<-s> I<spacing>] [B<-t> I<title>]
 [B<-q> I<quality>]
 
 =head1 VERSION
@@ -99,6 +99,10 @@ During operation, B<dthumb> will show its progress on STDERR.
 
 =over
 
+=item B<-a>, B<--all>
+
+Also include non-image files in the file listing
+
 =item B<-n>, B<--no-names>
 
 Do not show image names below thumbnails
@@ -106,6 +110,10 @@ Do not show image names below thumbnails
 =item B<-r>, B<--recreate>
 
 Recreate all thumbnails
+
+=item B<-R>, B<--recursive>
+
+Also include directories in the file listing
 
 =item B<-d>, B<--size> I<maxsize> (default: 200)
 
