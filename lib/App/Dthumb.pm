@@ -6,6 +6,7 @@ use 5.010;
 
 use App::Dthumb::Data;
 use Cwd;
+use File::Copy qw(copy);
 use File::Slurp qw(read_dir write_file);
 use Image::Imlib2;
 
@@ -29,6 +30,8 @@ sub new {
 	$conf{dir_thumbs} = "$conf{dir_images}/.thumbs";
 
 	$conf{names} //= ( $conf{'no-names'} ? 0 : 1 );
+
+	$conf{oxygen_base} //= '/usr/share/icons/oxygen/base';
 
 	$ref->{config} = \%conf;
 
@@ -90,6 +93,14 @@ sub create_files {
 	my $thumbdir = $self->{config}->{dir_thumbs};
 	my $datadir  = $self->{config}->{dir_data};
 	my @files    = $self->{data}->list_archived;
+	my @icons;
+
+	if ( $self->{config}{all} ) {
+		push( @icons, 'mimetypes/unknown.png' );
+	}
+	if ( $self->{config}{recursive} ) {
+		push( @icons, 'places/folder-blue.png' );
+	}
 
 	for my $dir ( $thumbdir, $datadir, "${datadir}/css", "${datadir}/js" ) {
 		if ( not -d $dir ) {
@@ -99,6 +110,12 @@ sub create_files {
 
 	for my $file (@files) {
 		write_file( "${datadir}/${file}", $self->{data}->get($file) );
+	}
+
+	for my $icon (@icons) {
+		my ( $dir, $file ) = split( qr{/}, $icon );
+		my $base = $self->{config}{oxygen_base};
+		copy( "${base}/128x128/${dir}/${file}", "${datadir}/${file}" );
 	}
 
 	return;

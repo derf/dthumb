@@ -23,6 +23,7 @@ my $build = Module::Build->new(
 		'autodie' => 0,
 		'Cwd' => 0,
 		'Data::Section' => 0,
+		'File::Copy' => 0,
 		'Getopt::Long' => 0,
 		'Image::Imlib2' => 0,
 		'IO::Handle' => 0,
