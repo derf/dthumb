@@ -4,11 +4,11 @@
 	<title><!-- $title --></title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script type="text/javascript" src=".dthumb/js/jquery-1.10.2.min.js"></script>
-	<script type="text/javascript" src=".dthumb/js/jquery.mousewheel-3.0.6.pack.js"></script>
-	<script type="text/javascript" src=".dthumb/js/jquery.fancybox.pack.js"></script>
-	<link rel="stylesheet" type="text/css" href=".dthumb/css/jquery.fancybox.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href=".dthumb/css/main.css"/>
+	<script type="text/javascript" src="<!--BASE-->.dthumb/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="<!--BASE-->.dthumb/js/jquery.mousewheel-3.0.6.pack.js"></script>
+	<script type="text/javascript" src="<!--BASE-->.dthumb/js/jquery.fancybox.pack.js"></script>
+	<link rel="stylesheet" type="text/css" href="<!--BASE-->.dthumb/css/jquery.fancybox.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="<!--BASE-->.dthumb/css/main.css"/>
 	<script type="text/javascript">//<![CDATA[
 		$(document).ready(function() {
 			$('.fancybox').fancybox();

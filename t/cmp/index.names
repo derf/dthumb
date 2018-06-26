@@ -18,13 +18,13 @@
 <body><div>
 <div class="image-container">
 	<a class="fancybox" href="one.png" title="one.png" data-fancybox-group="gallery">
-		<img src="t/imgdir/.thumbs/one.png" alt="one.png" /></a>
+		<img src=".thumbnails/one.png" alt="one.png" /></a>
 	<br />
 	<a style="text-decoration: none;" href="one.png">one.png</a>
 </div>
 <div class="image-container">
 	<a class="fancybox" href="two.png" title="two.png" data-fancybox-group="gallery">
-		<img src="t/imgdir/.thumbs/two.png" alt="two.png" /></a>
+		<img src=".thumbnails/two.png" alt="two.png" /></a>
 	<br />
 	<a style="text-decoration: none;" href="two.png">two.png</a>
 </div>

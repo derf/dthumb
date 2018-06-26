@@ -16,8 +16,8 @@ isa_ok($dthumb->{data}, 'App::Dthumb::Data');
 
 is($dthumb->{config}->{dir_data}, './.dthumb', 'Data directory is .dthumb');
 is($dthumb->{config}->{dir_images}, '.', 'Image directory is .');
-is($dthumb->{config}->{dir_thumbs}, './.thumbs',
-	'Thumbnail directory is dthumbs');
+is($dthumb->{config}->{suffix_thumbs}, '.thumbnails',
+	'Thumbnail suffix is .thumbnails');
 is($dthumb->{config}->{file_index}, 'index.html', 'index is index.html');
 
 is($dthumb->{config}->{names}   ,   1, 'Show image names');

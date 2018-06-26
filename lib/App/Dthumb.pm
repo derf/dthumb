@@ -26,8 +26,8 @@ sub new {
 	$conf{file_index} //= 'index.html';
 	$conf{dir_images} //= q{.};
 
-	$conf{dir_data}   = "$conf{dir_images}/.dthumb";
-	$conf{dir_thumbs} = "$conf{dir_images}/.thumbs";
+	$conf{dir_data}      = "$conf{dir_images}/.dthumb";
+	$conf{suffix_thumbs} = '.thumbnails';
 
 	$conf{names} //= ( $conf{'no-names'} ? 0 : 1 );
 
@@ -43,45 +43,53 @@ sub new {
 		height => $conf{size} * $conf{spacing} . 'px',
 	);
 
-	$ref->{html} = $ref->{data}->get('html_start.dthumb');
-
 	return bless( $ref, $obj );
 }
 
 sub read_directories {
 	my ($self) = @_;
 
-	my $thumbdir = $self->{config}->{dir_thumbs};
+	my $thumbdir = $self->{config}->{suffix_thumbs};
 	my $imgdir   = $self->{config}->{dir_images};
 	my ( @files, @old_thumbs );
 
-	for my $file ( read_dir($imgdir) ) {
+	my @queue = read_dir( $imgdir, prefix => 1 );
+	my @paths = ($imgdir);
+
+	for my $path (@queue) {
+		my ( $basedir, $file ) = ( $path =~ m{ ^ (.*) / ([^/]*) $ }x );
 		if ( $file =~ m{ ^ [.] }x ) {
 			next;
 		}
 		if ( $file eq 'index.html' ) {
 			next;
 		}
-		if ( -f "${imgdir}/${file}"
+		if ( -f $path
 			and
 			( $self->{config}{all} or $file =~ m{ [.] (png | jp e? g) $ }ix ) )
 		{
-			push( @files, $file );
+			push( @files, $path );
 		}
-		elsif ( $self->{config}{recursive} and -d "${imgdir}/${file}" ) {
-			push( @files, $file );
+		elsif ( $self->{config}{recursive} and -d $path ) {
+			push( @files, $path );
+			push( @queue, read_dir( $path, prefix => 1 ) );
+			push( @paths, $path );
 		}
 	}
 
-	if ( -d $thumbdir ) {
-		for my $file ( read_dir($thumbdir) ) {
-			if ( $file =~ m{^ [^.] }ox and not -f "${imgdir}/${file}" ) {
-				push( @old_thumbs, $file );
+	for my $path (@paths) {
+		if ( -d "${path}/${thumbdir}" ) {
+			for my $file ( read_dir("${path}/${thumbdir}") ) {
+				if ( $file =~ m{^ [^.] }ox and not -f "${path}/${file}" ) {
+					push( @old_thumbs, "${path}/$file" );
+				}
 			}
 		}
+		$self->{html}->{$path} = $self->{data}->get('html_start.dthumb');
 	}
 
 	@{ $self->{files} } = sort { lc($a) cmp lc($b) } @files;
+	@{ $self->{paths} } = sort { lc($a) cmp lc($b) } @paths;
 	@{ $self->{old_thumbnails} } = @old_thumbs;
 
 	return;
@@ -90,7 +98,7 @@ sub read_directories {
 sub create_files {
 	my ($self) = @_;
 
-	my $thumbdir = $self->{config}->{dir_thumbs};
+	my $thumbdir = $self->{config}->{suffix_thumbs};
 	my $datadir  = $self->{config}->{dir_data};
 	my @files    = $self->{data}->list_archived;
 	my @icons;
@@ -102,9 +110,15 @@ sub create_files {
 		push( @icons, 'places/folder-blue.png' );
 	}
 
-	for my $dir ( $thumbdir, $datadir, "${datadir}/css", "${datadir}/js" ) {
+	for my $dir ( $datadir, "${datadir}/css", "${datadir}/js" ) {
 		if ( not -d $dir ) {
 			mkdir($dir);
+		}
+	}
+
+	for my $path ( @{ $self->{paths} } ) {
+		if ( not -d "${path}/${thumbdir}" ) {
+			mkdir("${path}/${thumbdir}");
 		}
 	}
 
@@ -124,10 +138,8 @@ sub create_files {
 sub delete_old_thumbnails {
 	my ($self) = @_;
 
-	my $thumbdir = $self->{config}->{dir_thumbs};
-
 	for my $file ( @{ $self->{old_thumbnails} } ) {
-		unlink("${thumbdir}/${file}");
+		unlink($file);
 	}
 
 	return;
@@ -140,70 +152,77 @@ sub get_files {
 }
 
 sub create_thumbnail_html {
-	my ( $self, $file ) = @_;
+	my ( $self, $path ) = @_;
 
 	my $div_width = $self->{config}->{size} * $self->{config}->{spacing};
 	my $div_height = $div_width + ( $self->{config}->{names} ? 10 : 0 );
 
-	$self->{html} .= "<div class=\"image-container\">\n";
+	my ( $basedir, $file ) = ( $path =~ m{ ^ (.*) / ([^/]*) $ }x );
 
-	if ( -d $file ) {
-		$self->{html} .= sprintf(
+	my $html = \$self->{html}->{$basedir};
+
+	$$html .= "<div class=\"image-container\">\n";
+
+	if ( -d $path ) {
+		$$html .= sprintf(
 			"\t<a href=\"%s\" title=\"%s\">\n"
-			  . "\t\t<img src=\".dthumb/folder-blue.png\" alt=\"%s\" /></a>\n",
+			  . "\t\t<img src=\"<!--BASE-->.dthumb/folder-blue.png\" alt=\"%s\" /></a>\n",
 			($file) x 3,
 		);
 	}
 	elsif ( $file =~ m{ [.] (png | jp e? g) $ }ix ) {
-		$self->{html} .= sprintf(
+		$$html .= sprintf(
 "\t<a class=\"fancybox\" href=\"%s\" title=\"%s\" data-fancybox-group=\"gallery\">\n"
 			  . "\t\t<img src=\"%s/%s\" alt=\"%s\" /></a>\n",
 			($file) x 2,
-			$self->{config}->{dir_thumbs},
+			$self->{config}->{suffix_thumbs},
 			($file) x 2,
 		);
 	}
 	else {
-		$self->{html} .= sprintf(
+		$$html .= sprintf(
 			"\t<a href=\"%s\" title=\"%s\">\n"
-			  . "\t\t<img src=\".dthumb/unknown.png\" alt=\"%s\" /></a>\n",
+			  . "\t\t<img src=\"<!--BASE-->.dthumb/unknown.png\" alt=\"%s\" /></a>\n",
 			($file) x 3,
 		);
 	}
 
 	if ( $self->{config}->{names} or -d $file ) {
-		$self->{html} .= sprintf(
+		$$html .= sprintf(
 			"\t<br />\n" . "\t<a style=\"%s;\" href=\"%s\">%s</a>\n",
 			'text-decoration: none',
 			($file) x 2,
 		);
 	}
 
-	$self->{html} .= "</div>\n";
+	$$html .= "</div>\n";
 
 	return;
 }
 
 sub create_thumbnail_image {
-	my ( $self, $file ) = @_;
+	my ( $self, $path ) = @_;
 
-	my $thumbdir  = $self->{config}->{dir_thumbs};
+	my $thumbdir  = $self->{config}->{suffix_thumbs};
 	my $thumb_dim = $self->{config}->{size};
 
-	if (    -e "${thumbdir}/${file}"
+	my ( $basedir, $file ) = ( $path =~ m{ ^ (.*) / ([^/]*) $ }x );
+
+	if (    -e "${basedir}/${thumbdir}/${file}"
 		and not $self->{config}->{recreate}
-		and ( stat($file) )[9] <= ( stat("${thumbdir}/${file}") )[9] )
+		and ( stat($path) )[9]
+		<= ( stat("${basedir}/${thumbdir}/${file}") )[9] )
 	{
 		return;
 	}
-	if ( -d $file
+	if ( -d $path
 		or $self->{config}{all}
 		and not( $file =~ m{ [.] (png | jp e? g) $ }ix ) )
 	{
 		return;
 	}
 
-	my $image = Image::Imlib2->load($file);
+	my $image = Image::Imlib2->load($path);
 	my ( $dx, $dy ) = ( $image->width, $image->height );
 	my $thumb = $image;
 
@@ -217,7 +236,7 @@ sub create_thumbnail_image {
 	}
 
 	$thumb->set_quality( $self->{config}->{quality} );
-	$thumb->save("${thumbdir}/${file}");
+	$thumb->save("${basedir}/${thumbdir}/${file}");
 
 	return;
 }
@@ -225,9 +244,18 @@ sub create_thumbnail_image {
 sub write_out_html {
 	my ($self) = @_;
 
-	$self->{html} .= $self->{data}->get('html_end.dthumb');
+	my $index_name = $self->{config}->{file_index};
 
-	write_file( $self->{config}->{file_index}, $self->{html} );
+	for my $path ( @{ $self->{paths} } ) {
+		my $diff = substr( $path, length( $self->{config}->{dir_images} ) );
+		my $path_to_base = q{};
+		if ( length($diff) ) {
+			$path_to_base = '../' x ( scalar split( qr{/}, $diff ) - 1 );
+		}
+		$self->{html}->{$path} .= $self->{data}->get('html_end.dthumb');
+		$self->{html}->{$path} =~ s{<!--BASE-->}{$path_to_base}g;
+		write_file( "${path}/${index_name}", $self->{html}->{$path} );
+	}
 
 	return;
 }
