@@ -23,6 +23,8 @@ my @indep_files = ('main.css');
 my $dthumb = App::Dthumb->new(%conf);
 isa_ok($dthumb, 'App::Dthumb');
 
+mkdir('t/out');
+
 for my $file (qw(one.png two.png)) {
 	$dthumb->create_thumbnail_html($file);
 }
@@ -66,6 +68,7 @@ rmdir('t/out/.thumbs');
 rmdir('t/out/.dthumb/css');
 rmdir('t/out/.dthumb/js');
 rmdir('t/out/.dthumb');
+rmdir('t/out');
 
 is_deeply([sort $dthumb->{data}->list_archived()], [sort @created_files],
 	'create_files: All files created');
