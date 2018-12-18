@@ -31,5 +31,10 @@ my $build = Module::Build->new(
 		'Time::Progress' => 0,
 	},
 	sign => 1,
+	meta_merge => {
+		resources => {
+			repository => 'https://github.com/derf/dthumb'
+		}
+	},
 );
 $build->create_build_script();
