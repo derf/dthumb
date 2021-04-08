@@ -24,6 +24,7 @@ GetOptions(
 	$opt,
 	qw{
 		all|a
+		header=s
 		help|h
 		no-names|n
 		quality|q=i
@@ -136,6 +137,10 @@ no border at all, etc.
 =item B<-t>, B<--title> I<string>
 
 Set HTML document title. Defaults to the basename of the current directory
+
+=item B<--header> I<file>
+
+Include I<file> contents in the generated HTML, right after the opening div tag.
 
 =item B<-q>, B<--quality> I<int> (default: 75)
 

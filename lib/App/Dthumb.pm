@@ -7,7 +7,7 @@ use 5.010;
 use App::Dthumb::Data;
 use Cwd;
 use File::Copy qw(copy);
-use File::Slurp qw(read_dir write_file);
+use File::Slurp qw(read_dir read_file write_file);
 use Image::Imlib2;
 
 our $VERSION = '0.2';
@@ -44,6 +44,10 @@ sub new {
 	);
 
 	$ref->{html} = $ref->{data}->get('html_start.dthumb');
+
+	if ( $conf{header} ) {
+		$ref->{html} .= read_file( $conf{header} );
+	}
 
 	return bless( $ref, $obj );
 }
