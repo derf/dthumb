@@ -7,7 +7,7 @@ use 5.010;
 use App::Dthumb::Data;
 use Cwd;
 use File::Copy qw(copy);
-use File::Slurp qw(read_dir write_file);
+use File::Slurp qw(read_dir read_file write_file);
 use Image::Imlib2;
 
 our $VERSION = '0.2';
@@ -38,10 +38,18 @@ sub new {
 	$ref->{data} = App::Dthumb::Data->new();
 
 	$ref->{data}->set_vars(
-		title  => $conf{title},
-		width  => $conf{size} * $conf{spacing} . 'px',
-		height => $conf{size} * $conf{spacing} . 'px',
+		title     => $conf{title},
+		boxwidth  => $conf{size} * $conf{spacing} . 'px',
+		boxheight => $conf{size} * $conf{spacing} . 'px',
+		imgwidth  => $conf{size} . 'px',
+		imgheight => $conf{size} . 'px',
 	);
+
+	$ref->{html} = $ref->{data}->get('html_start.dthumb');
+
+	if ( $conf{header} ) {
+		$ref->{html} .= read_file( $conf{header} );
+	}
 
 	return bless( $ref, $obj );
 }
@@ -203,8 +211,8 @@ sub create_thumbnail_html {
 sub create_thumbnail_image {
 	my ( $self, $path ) = @_;
 
-	my $thumbdir  = $self->{config}->{suffix_thumbs};
-	my $thumb_dim = $self->{config}->{size};
+	my $thumbdir  = $self->{config}->{dir_thumbs};
+	my $thumb_dim = $self->{config}->{size} * 2;
 
 	my ( $basedir, $file ) = ( $path =~ m{ ^ (.*) / ([^/]*) $ }x );
 
