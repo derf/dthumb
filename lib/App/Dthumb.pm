@@ -38,9 +38,11 @@ sub new {
 	$ref->{data} = App::Dthumb::Data->new();
 
 	$ref->{data}->set_vars(
-		title  => $conf{title},
-		width  => $conf{size} * $conf{spacing} . 'px',
-		height => $conf{size} * $conf{spacing} . 'px',
+		title     => $conf{title},
+		boxwidth  => $conf{size} * $conf{spacing} . 'px',
+		boxheight => $conf{size} * $conf{spacing} . 'px',
+		imgwidth  => $conf{size} . 'px',
+		imgheight => $conf{size} . 'px',
 	);
 
 	$ref->{html} = $ref->{data}->get('html_start.dthumb');
@@ -192,7 +194,7 @@ sub create_thumbnail_image {
 	my ( $self, $file ) = @_;
 
 	my $thumbdir  = $self->{config}->{dir_thumbs};
-	my $thumb_dim = $self->{config}->{size};
+	my $thumb_dim = $self->{config}->{size} * 2;
 
 	if (    -e "${thumbdir}/${file}"
 		and not $self->{config}->{recreate}

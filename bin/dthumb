@@ -123,8 +123,9 @@ Also include directories in the file listing
 
 =item B<-d>, B<--size> I<maxsize> (default: 200)
 
-Set maximum thumbnail size. Thumbnails are created so that neither width nor
-height exceed I<maxsize> pixels.
+Set maximum thumbnail size. Both width and height will be limited while
+preserving aspect ratio. Thumbnails are created at 2x resolution and
+downscaled via HTML tags to accomodate high-DPI displays.
 
 =item B<-s>, B<--spacing> I<float> (default: 1.1)
 
